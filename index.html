@@ -1,0 +1,1602 @@
+<title>Objetivo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: barra de ferramentas fina em cima; editor e prévia lado a lado ocupando a tela; referência de comandos embaixo. */
+:root {
+  --fundo: #eef0ec;
+  --painel: #ffffff;
+  --tinta: #18201c;
+  --suave: #5d6862;
+  --linha: #d6dbd5;
+  --destaque: #2f49d1;
+  --destaque-tinta: #ffffff;
+  --codigo-fundo: #fbfcfa;
+  --numeros: #a1aaa4;
+  --fonte-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --fonte-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fonte-codigo: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #121614; --painel: #1a1f1c; --tinta: #e6ebe7; --suave: #95a199; --linha: #2c3430;
+    --destaque: #7f91ff; --destaque-tinta: #0d1020; --codigo-fundo: #151a17; --numeros: #56615a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fundo: #121614; --painel: #1a1f1c; --tinta: #e6ebe7; --suave: #95a199; --linha: #2c3430;
+  --destaque: #7f91ff; --destaque-tinta: #0d1020; --codigo-fundo: #151a17; --numeros: #56615a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--fundo);
+  color: var(--tinta);
+  font: 15px/1.55 var(--fonte-texto);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px 40px;
+}
+
+.barra {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  padding-block: 4px 12px;
+}
+.marca { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.marca h1 {
+  font: 800 28px/1 var(--fonte-titulo); letter-spacing: -0.02em; margin: 0;
+}
+.marca h1 span { color: var(--destaque); }
+.marca p { margin: 0; color: var(--suave); font-size: 14px; }
+.acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+button, .botao, select {
+  font: 500 14px/1 var(--fonte-texto);
+  height: 36px; padding: 0 14px; border-radius: 8px;
+  border: 1px solid var(--linha); background: var(--painel); color: var(--tinta);
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+button:hover, .botao:hover, select:hover { border-color: var(--suave); }
+button.principal { background: var(--destaque); color: var(--destaque-tinta); border-color: transparent; font-weight: 600; }
+button.principal:hover { filter: brightness(1.08); }
+:is(button, .botao, select, textarea):focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+kbd { font: 11px var(--fonte-codigo); opacity: .75; }
+
+.mesa {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px;
+  height: calc(100vh - 110px); min-height: 480px;
+}
+.painel {
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--painel); border: 1px solid var(--linha); border-radius: 12px; overflow: hidden;
+}
+.painel-topo {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 14px; border-bottom: 1px solid var(--linha);
+  font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave);
+}
+.painel-topo b { font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--tinta); font-size: 13px; }
+
+.editor { position: relative; flex: 1; display: flex; min-height: 0; background: var(--codigo-fundo); }
+.editor pre, .editor textarea {
+  margin: 0; padding: 14px 12px; font: 14px/1.6 var(--fonte-codigo); tab-size: 4;
+}
+#numeros {
+  min-width: 3.2em; text-align: right; color: var(--numeros); user-select: none;
+  overflow: hidden; border-right: 1px solid var(--linha); font-variant-numeric: tabular-nums;
+}
+#codigo {
+  flex: 1; border: 0; resize: none; outline: none; background: transparent; color: var(--tinta);
+  white-space: pre; overflow: auto;
+}
+#codigo:focus-visible { outline: none; }
+.editor.soltando::after {
+  content: "Solte o arquivo .objetivo aqui"; position: absolute; inset: 8px;
+  display: grid; place-items: center; border: 2px dashed var(--destaque); border-radius: 10px;
+  background: color-mix(in srgb, var(--destaque) 10%, transparent); color: var(--destaque); font-weight: 600;
+}
+
+#previa { flex: 1; width: 100%; border: 0; background: #fff; }
+
+.dica { color: var(--suave); font-size: 13px; padding: 10px 2px 0; }
+
+.referencia { margin-top: 36px; }
+.referencia h2 { font: 800 22px/1.2 var(--fonte-titulo); margin: 0 0 4px; text-wrap: balance; }
+.referencia > p { margin: 0 0 18px; color: var(--suave); max-width: 65ch; }
+.grupos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.grupo { background: var(--painel); border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px; }
+.grupo h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); }
+.grupo code {
+  display: block; font: 13px/1.5 var(--fonte-codigo); padding: 3px 0; color: var(--tinta);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.grupo code + code { border-top: 1px dashed var(--linha); }
+
+@media (max-width: 820px) {
+  .mesa { grid-template-columns: 1fr; height: auto; }
+  .painel { height: 60vh; min-height: 360px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="barra">
+  <div class="marca">
+    <h1>Objetivo<span>.</span></h1>
+    <p>Programação em português para criar sites.</p>
+  </div>
+  <div class="acoes">
+    <select id="exemplos" aria-label="Exemplos">
+      <option value="ex-contador">Exemplo: contador</option>
+      <option value="ex-tarefas">Exemplo: lista de tarefas</option>
+      <option value="ex-dado">Exemplo: dado</option>
+    </select>
+    <label class="botao" for="arquivo">Abrir arquivo</label>
+    <input id="arquivo" type="file" accept=".objetivo,text/plain" hidden>
+    <button id="rodar" class="principal" type="button">Rodar <kbd>Ctrl+Enter</kbd></button>
+  </div>
+</header>
+
+<main class="mesa">
+  <section class="painel" aria-label="Código">
+    <div class="painel-topo">Código <b id="nome-arquivo">contador.objetivo</b></div>
+    <div class="editor" id="editor">
+      <pre id="numeros" aria-hidden="true">1</pre>
+      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código Objetivo"></textarea>
+    </div>
+  </section>
+  <section class="painel" aria-label="Resultado">
+    <div class="painel-topo">Resultado <b id="estado">atualiza enquanto você digita</b></div>
+    <iframe id="previa" title="Resultado do código"></iframe>
+  </section>
+</main>
+<p class="dica">Arraste um arquivo <code>.objetivo</code> para o editor para abrir. Erros aparecem no resultado, com o número da linha.</p>
+
+<section class="referencia">
+  <h2>Comandos</h2>
+  <p>Toda ação começa com um verbo. Guardar é sempre <code>vale</code>, ler é sempre <code>o ___ de ___</code>, e todo bloco fecha com <code>fim do</code> e a palavra que o abriu.</p>
+  <div class="grupos">
+    <div class="grupo"><h3>Guardar</h3>
+      <code>pontos vale 0</code><code>nome vale "Ana"</code><code>frutas vale a lista "maçã", "uva"</code><code>aumente pontos em 1</code><code>"Olá, " junto com nome</code></div>
+    <div class="grupo"><h3>Decidir</h3>
+      <code>se idade for maior que 17 então</code><code>senão se idade for igual a 17 então</code><code>senão</code><code>fim do se</code><code>for menor que · for diferente de · for vazio · for par</code></div>
+    <div class="grupo"><h3>Repetir</h3>
+      <code>repita 5 vezes … fim do repita</code><code>para cada n de 1 até 10 … fim do para</code><code>para cada fruta em frutas … fim do para</code><code>enquanto vidas for maior que 0 … fim do enquanto</code></div>
+    <div class="grupo"><h3>Criar na página</h3>
+      <code>crie um título chamado topo com "Oi"</code><code>crie um botão chamado ok com "OK" dentro de menu</code><code>crie uma caixa de texto chamada campo</code><code>crie uma imagem chamada foto</code></div>
+    <div class="grupo"><h3>Mudar a página</h3>
+      <code>mude o texto de topo para "Olá"</code><code>mude a cor de topo para azul claro</code><code>mude o fundo de menu para preto</code><code>esconda ok · mostre ok · apague ok</code><code>mostre o aviso "Pronto!"</code></div>
+    <div class="grupo"><h3>Acontecimentos</h3>
+      <code>quando clicar em ok … fim do quando</code><code>quando digitar em campo</code><code>quando apertar a tecla "espaço"</code><code>a cada 1 segundo … fim do a cada</code></div>
+    <div class="grupo"><h3>Layout e aparência</h3>
+      <code>arrume a página assim
+    [ topo              ]
+    [ menu ] [ conteúdo ]
+fim do arrume</code><code>aparência de botão
+    fundo: verde
+    cantos: redondos
+fim da aparência</code></div>
+    <div class="grupo"><h3>Ensinar comandos novos</h3>
+      <code>ensine média de a e b
+    responda (a + b) / 2
+fim do ensine</code><code>escreva média de 7 e 9</code></div>
+  </div>
+</section>
+
+<script type="text/plain" id="ex-contador">-- contador.objetivo
+
+página "Meu Teste"
+use o tema escuro
+
+arrume a página assim
+    [ topo                    ]
+    [ menu    ] [ conteúdo    ]
+    [ rodapé                  ]
+fim do arrume
+
+aparência de botão
+    fundo: azul
+    cor: branco
+    cantos: redondos
+    tamanho: grande
+fim da aparência
+
+crie um título chamado topo com "Olá!"
+crie uma área chamada menu
+crie uma área chamada conteúdo
+crie um texto chamado rodapé com "Feito em Objetivo"
+
+crie um botão chamado somar com "Clique" dentro de menu
+crie um texto chamado placar com "0 cliques" dentro de conteúdo
+
+cliques vale 0
+
+quando clicar em somar
+    aumente cliques em 1
+    mude o texto de placar para cliques junto com " cliques"
+
+    se cliques for igual a 10 então
+        mude o texto de topo para "Você chegou a 10!"
+        mude a cor de topo para amarelo
+    fim do se
+fim do quando
+</script>
+
+<script type="text/plain" id="ex-tarefas">-- tarefas.objetivo
+
+página "Tarefas"
+use o tema claro
+
+arrume a página assim
+    [ topo                  ]
+    [ entrada     ] [ botao ]
+    [ tarefas               ]
+fim do arrume
+
+crie um título chamado topo com "Minhas tarefas"
+crie uma caixa de texto chamada entrada com "Escreva uma tarefa"
+crie um botão chamado botao com "Adicionar"
+crie uma área chamada tarefas
+
+total vale 0
+
+quando clicar em botao
+    tarefa vale o texto de entrada
+    se tarefa for vazio então
+        mostre o aviso "Escreva alguma coisa primeiro"
+    senão
+        crie um texto com tarefa dentro de tarefas
+        aumente total em 1
+        mude o texto de entrada para ""
+        mude o texto de topo para "Minhas tarefas (" junto com total junto com ")"
+    fim do se
+fim do quando
+</script>
+
+<script type="text/plain" id="ex-dado">-- dado.objetivo
+
+página "Dado"
+use o tema escuro
+
+crie um título chamado resultado com "?"
+crie um botão chamado jogar com "Jogar o dado"
+crie um texto chamado historico com "Ainda não jogou"
+
+aparência de resultado
+    tamanho: 120
+    alinhamento: centro
+fim da aparência
+
+jogadas vale a lista vazia
+
+quando clicar em jogar
+    n vale um número sorteado de 1 até 6
+    mude o texto de resultado para n
+    adicione n em jogadas
+    mude o texto de historico para "Jogadas: " junto com jogadas
+    se n for igual a 6 então
+        mude a cor de resultado para amarelo
+    senão
+        mude a cor de resultado para branco
+    fim do se
+fim do quando
+</script>
+
+<script type="text/plain" id="interpretador">/*
+ * Objetivo — interpretador v0.1
+ * Lê arquivos .objetivo e executa direto no navegador, linha por linha.
+ * O código Objetivo não é convertido em JavaScript: este arquivo é só o "leitor".
+ */
+(function () {
+'use strict';
+
+/* ───────────────────────── utilidades ───────────────────────── */
+
+const semAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const norm = p => (p.toLowerCase() === 'é' ? 'é' : semAcento(p));
+
+class ErroObjetivo extends Error {
+  constructor(linha, msg) { super(msg); this.linha = linha; }
+}
+const erro = (linha, msg) => { throw new ErroObjetivo(linha, msg); };
+
+class SinalResponder { constructor(v) { this.v = v; } }
+class Sinal { constructor(tipo, linha) { this.tipo = tipo; this.linha = linha; } }
+
+function distancia(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function sugestao(palavra, opcoes) {
+  const p = semAcento(palavra);
+  let melhor = null, md = Infinity;
+  for (const o of opcoes) { const dd = distancia(p, semAcento(o)); if (dd < md) { md = dd; melhor = o; } }
+  return md <= Math.max(1, Math.floor(p.length / 3)) ? melhor : null;
+}
+const talvez = (palavra, opcoes) => { const s = sugestao(palavra, opcoes); return s ? ` Você quis dizer "${s}"?` : ''; };
+
+const COMANDOS = ['página', 'use', 'arrume', 'aparência', 'crie', 'escreva', 'mostre', 'esconda', 'apague',
+  'mude', 'pinte', 'aumente', 'diminua', 'adicione', 'remova', 'pergunte', 'se', 'repita', 'para', 'enquanto',
+  'quando', 'a cada', 'ensine', 'responda', 'pare', 'pule', 'espere', 'espie', 'tente'];
+
+/* ───────────────────────── estado global ───────────────────────── */
+
+const G = {
+  vars: new Map(), originais: new Map(), els: new Map(),
+  aoAbrir: [], espiados: new Map(), raiz: null, estilo: null, fonte: [], profundidade: 0, voltas: 0,
+};
+
+/* ───────────────────────── valores ───────────────────────── */
+
+class Ficha extends Map {}
+const ehElemento = v => typeof HTMLElement !== 'undefined' && v instanceof HTMLElement;
+
+function texto(v) {
+  if (v === undefined || v === null) return '';
+  if (typeof v === 'number') return Number.isInteger(v) ? String(v) : v.toLocaleString('pt-BR', { maximumFractionDigits: 6 });
+  if (typeof v === 'boolean') return v ? 'verdadeiro' : 'falso';
+  if (Array.isArray(v)) return v.map(texto).join(', ');
+  if (v instanceof Ficha) return '{ ' + [...v].map(([k, x]) => `${G.originais.get(k) || k}: ${texto(x)}`).join(', ') + ' }';
+  if (ehElemento(v)) return v.tagName === 'INPUT' ? v.value : v.textContent;
+  return String(v);
+}
+const pareceNumero = s => typeof s === 'string' && /^\s*-?\d+([.,]\d+)?\s*$/.test(s);
+function num(v, linha) {
+  if (typeof v === 'number') return v;
+  if (ehElemento(v)) v = texto(v);
+  if (pareceNumero(v)) return parseFloat(v.replace(',', '.'));
+  erro(linha, `"${texto(v)}" não é um número, então não dá pra fazer conta com ele. Para juntar textos, use "junto com".`);
+}
+function lista(v, linha) {
+  if (Array.isArray(v)) return v;
+  erro(linha, `"${texto(v)}" não é uma lista. Crie uma lista assim: frutas vale a lista "maçã", "uva"`);
+}
+function igual(a, b) {
+  if (ehElemento(a)) a = texto(a);
+  if (ehElemento(b)) b = texto(b);
+  const na = typeof a === 'number' || pareceNumero(a), nb = typeof b === 'number' || pareceNumero(b);
+  if (na && nb) return num(a) === num(b);
+  return texto(a) === texto(b);
+}
+const vazio = v => (Array.isArray(v) ? v.length === 0 : texto(v).trim() === '');
+function contem(a, b) {
+  if (Array.isArray(a)) return a.some(x => igual(x, b));
+  return semAcento(texto(a)).includes(semAcento(texto(b)));
+}
+const verdade = v => v !== false && v !== 0 && v !== '' && v !== undefined && v !== null;
+
+/* ───────────────────────── cores e tamanhos ───────────────────────── */
+
+const CORES = {
+  azul: '#3b82f6', vermelho: '#ef4444', vermelha: '#ef4444', verde: '#22c55e', amarelo: '#facc15',
+  amarela: '#facc15', laranja: '#f97316', roxo: '#a855f7', roxa: '#a855f7', rosa: '#ec4899',
+  marrom: '#92400e', cinza: '#9ca3af', branco: '#ffffff', branca: '#ffffff', preto: '#111111',
+  preta: '#111111', dourado: '#d4a017', transparente: 'transparent',
+};
+function corCss(bruto, linha) {
+  const s = semAcento(bruto.trim());
+  if (/^#[0-9a-f]{3,8}$/.test(s)) return s;
+  const [base, mod, ...sobra] = s.split(/\s+/);
+  const c = CORES[base];
+  if (!c) erro(linha, `Não conheço a cor "${bruto.trim()}".${talvez(base, Object.keys(CORES))} Cores: azul, vermelho, verde, amarelo, laranja, roxo, rosa, marrom, cinza, branco, preto.`);
+  if (!mod) return c;
+  if (sobra.length) erro(linha, `A cor "${bruto.trim()}" tem palavras demais. Use, por exemplo: azul claro`);
+  if (mod === 'claro' || mod === 'clara') return `color-mix(in srgb, ${c} 55%, white)`;
+  if (mod === 'escuro' || mod === 'escura') return `color-mix(in srgb, ${c} 60%, black)`;
+  erro(linha, `Depois da cor eu entendo "claro" ou "escuro", mas encontrei "${mod}".`);
+}
+const TAMANHOS = { minusculo: '0.7rem', pequeno: '0.85rem', normal: '1rem', medio: '1rem', grande: '1.5rem', enorme: '2.5rem' };
+function tamanhoCss(v, linha) {
+  if (typeof v === 'number' || pareceNumero(v)) return num(v, linha) + 'px';
+  const t = TAMANHOS[semAcento(texto(v).trim())];
+  if (!t) erro(linha, `Não conheço o tamanho "${texto(v)}". Use pequeno, médio, grande, enorme ou um número.`);
+  return t;
+}
+const ESPACOS = { nenhum: '0', pequeno: '4px', medio: '10px', grande: '20px', enorme: '36px' };
+
+/* ───────────────────────── leitor de linha (tokens) ───────────────────────── */
+
+function tokenizar(txt, linha) {
+  const t = [];
+  let i = 0;
+  while (i < txt.length) {
+    const c = txt[i];
+    if (c === ' ' || c === '\t' || c === '\r') { i++; continue; }
+    if (c === '-' && txt[i + 1] === '-') break;
+    if ('"“”'.includes(c)) {
+      let j = i + 1, s = '';
+      while (j < txt.length && !'"“”'.includes(txt[j])) s += txt[j++];
+      if (j >= txt.length) erro(linha, 'Um texto começou com aspas (") mas não terminou. Feche com outra " no final do texto.');
+      t.push({ t: 'txt', v: s }); i = j + 1; continue;
+    }
+    if (/[0-9]/.test(c)) {
+      let j = i;
+      while (j < txt.length && /[0-9]/.test(txt[j])) j++;
+      if ((txt[j] === ',' || txt[j] === '.') && /[0-9]/.test(txt[j + 1] || '')) {
+        j++; while (j < txt.length && /[0-9]/.test(txt[j])) j++;
+      }
+      t.push({ t: 'num', v: parseFloat(txt.slice(i, j).replace(',', '.')) }); i = j; continue;
+    }
+    if (c === '#' && /[0-9a-f]/i.test(txt[i + 1] || '')) {
+      let j = i + 1;
+      while (j < txt.length && /[0-9a-f]/i.test(txt[j])) j++;
+      t.push({ t: 'txt', v: txt.slice(i, j) }); i = j; continue;
+    }
+    const m = /^[\p{L}_][\p{L}\p{N}_]*/u.exec(txt.slice(i));
+    if (m) { t.push({ t: 'pal', v: m[0], n: norm(m[0]) }); i += m[0].length; continue; }
+    if ('+-*/(),:'.includes(c)) { t.push({ t: 'sim', v: c }); i++; continue; }
+    erro(linha, `Não sei o que significa o símbolo "${c}" aqui.`);
+  }
+  return t;
+}
+
+class Linha {
+  constructor(toks, num, prog) { this.t = toks; this.i = 0; this.num = num; this.prog = prog; }
+  get acabou() { return this.i >= this.t.length; }
+  olha(k = 0) { return this.t[this.i + k]; }
+  eh(n, k = 0) { const x = this.t[this.i + k]; return !!x && x.t === 'pal' && x.n === n; }
+  ehSim(s) { const x = this.t[this.i]; return !!x && x.t === 'sim' && x.v === s; }
+  aceita(...ns) { return ns.some(n => this.eh(n)) ? this.t[this.i++] : null; }
+  espera(n, dica) {
+    if (this.eh(n)) return this.t[this.i++];
+    const x = this.olha();
+    erro(this.num, dica || (x ? `Esperava a palavra "${n}" aqui, mas encontrei "${x.v}".` : `Faltou a palavra "${n}" no final da linha.`));
+  }
+  artigo() { this.aceita('o', 'a', 'os', 'as', 'um', 'uma'); }
+  nome(oque = 'um nome') {
+    const x = this.olha();
+    if (!x || x.t !== 'pal') erro(this.num, x ? `Esperava ${oque}, mas encontrei "${x.v}".` : `Faltou ${oque} no final da linha.`);
+    this.i++; return x;
+  }
+  resto() { return this.t.slice(this.i).map(x => (x.t === 'txt' ? `"${x.v}"` : x.v)).join(' '); }
+  fimDaLinha() { if (!this.acabou) erro(this.num, `Não entendi esta parte do final da linha: ${this.resto()}`); }
+  palavrasRestantes() { return this.t.slice(this.i).every(x => x.t === 'pal' || (x.t === 'txt' && x.v.startsWith('#'))); }
+}
+
+/* ───────────────────────── expressões ───────────────────────── */
+/* Cada expressão vira uma função async (ctx) => valor. */
+
+const expr = L => exprOu(L);
+function exprOu(L) {
+  let a = exprE(L);
+  while (L.aceita('ou')) { const x = a, b = exprE(L); a = async c => verdade(await x(c)) || verdade(await b(c)); }
+  return a;
+}
+function exprE(L) {
+  let a = exprNao(L);
+  while (L.aceita('e')) { const x = a, b = exprNao(L); a = async c => verdade(await x(c)) && verdade(await b(c)); }
+  return a;
+}
+function exprNao(L) {
+  if (L.aceita('nao')) { const a = exprNao(L); return async c => !verdade(await a(c)); }
+  return exprCompara(L);
+}
+function exprCompara(L) {
+  const a = exprJunto(L), linha = L.num;
+  if (L.aceita('tiver', 'tem')) { const b = exprJunto(L); return async c => contem(await a(c), await b(c)); }
+  if (!L.aceita('for', 'é', 'forem', 'estiver')) return a;
+  const neg = !!L.aceita('nao');
+  let f;
+  if (L.aceita('maior')) {
+    if (L.aceita('ou')) { L.espera('igual'); L.espera('a'); const b = exprJunto(L); f = async c => num(await a(c), linha) >= num(await b(c), linha); }
+    else { L.espera('que'); const b = exprJunto(L); f = async c => num(await a(c), linha) > num(await b(c), linha); }
+  } else if (L.aceita('menor')) {
+    if (L.aceita('ou')) { L.espera('igual'); L.espera('a'); const b = exprJunto(L); f = async c => num(await a(c), linha) <= num(await b(c), linha); }
+    else { L.espera('que'); const b = exprJunto(L); f = async c => num(await a(c), linha) < num(await b(c), linha); }
+  } else if (L.aceita('igual')) {
+    L.espera('a'); const b = exprJunto(L); f = async c => igual(await a(c), await b(c));
+  } else if (L.aceita('diferente')) {
+    L.espera('de'); const b = exprJunto(L); f = async c => !igual(await a(c), await b(c));
+  } else if (L.aceita('vazio', 'vazia')) f = async c => vazio(await a(c));
+  else if (L.aceita('par')) f = async c => num(await a(c), linha) % 2 === 0;
+  else if (L.aceita('impar')) f = async c => Math.abs(num(await a(c), linha) % 2) === 1;
+  else if (L.aceita('verdadeiro')) f = async c => (await a(c)) === true;
+  else if (L.aceita('falso')) f = async c => (await a(c)) === false;
+  else erro(linha, 'Depois de "for" eu esperava uma comparação: "maior que", "menor que", "igual a", "diferente de", "vazio", "par" ou "ímpar".');
+  return neg ? async c => !(await f(c)) : f;
+}
+function exprJunto(L) {
+  let a = exprSoma(L);
+  while (L.eh('junto') && L.eh('com', 1)) { L.i += 2; const x = a, b = exprSoma(L); a = async c => texto(await x(c)) + texto(await b(c)); }
+  return a;
+}
+function exprSoma(L) {
+  let a = exprProd(L);
+  const linha = L.num;
+  while (L.ehSim('+') || L.ehSim('-')) {
+    const op = L.t[L.i++].v, x = a, b = exprProd(L);
+    a = op === '+' ? async c => num(await x(c), linha) + num(await b(c), linha)
+                   : async c => num(await x(c), linha) - num(await b(c), linha);
+  }
+  return a;
+}
+function exprProd(L) {
+  let a = exprUn(L);
+  const linha = L.num;
+  while (L.ehSim('*') || L.ehSim('/')) {
+    const op = L.t[L.i++].v, x = a, b = exprUn(L);
+    a = op === '*' ? async c => num(await x(c), linha) * num(await b(c), linha)
+                   : async c => { const d = num(await b(c), linha); if (d === 0) erro(linha, 'Não dá pra dividir por zero.'); return num(await x(c), linha) / d; };
+  }
+  return a;
+}
+function exprUn(L) {
+  if (L.ehSim('-')) { L.i++; const a = exprUn(L), linha = L.num; return async c => -num(await a(c), linha); }
+  return primario(L);
+}
+
+function primario(L) {
+  const x = L.olha(), linha = L.num;
+  if (!x) erro(linha, 'A linha terminou antes da hora: faltou um valor no final.');
+  if (x.t === 'num' || x.t === 'txt') { L.i++; return () => x.v; }
+  if (L.ehSim('(')) {
+    L.i++; const e = expr(L);
+    if (!L.ehSim(')')) erro(linha, 'Abriu um parêntese "(" mas não fechou com ")".');
+    L.i++; return e;
+  }
+  if (x.t !== 'pal') erro(linha, `Não esperava "${x.v}" aqui.`);
+  const n = x.n;
+  if (n === 'verdadeiro') { L.i++; return () => true; }
+  if (n === 'falso') { L.i++; return () => false; }
+
+  if ((n === 'a' || n === 'uma') && L.eh('lista', 1)) {
+    L.i += 2;
+    if (L.aceita('vazia')) return () => [];
+    const itens = [exprJunto(L)];
+    while (L.ehSim(',')) { L.i++; itens.push(exprJunto(L)); }
+    return async c => { const r = []; for (const f of itens) r.push(await f(c)); return r; };
+  }
+  if ((n === 'a' || n === 'uma') && L.eh('ficha', 1)) {
+    L.i += 2;
+    const campos = [];
+    if (L.aceita('com')) {
+      do {
+        const k = L.nome('o nome de uma informação da ficha');
+        G.originais.set(k.n, k.v);
+        campos.push([k.n, exprJunto(L)]);
+      } while (L.aceita('e') || (L.ehSim(',') && ++L.i));
+    }
+    return async c => { const f = new Ficha(); for (const [k, e] of campos) f.set(k, await e(c)); return f; };
+  }
+  if (n === 'um' && L.eh('numero', 1) && L.eh('sorteado', 2)) {
+    L.i += 3; L.espera('de');
+    const a = exprSoma(L); L.espera('ate'); const b = exprSoma(L);
+    return async c => {
+      const lo = Math.ceil(num(await a(c), linha)), hi = Math.floor(num(await b(c), linha));
+      return lo + Math.floor(Math.random() * (hi - lo + 1));
+    };
+  }
+  if (n === 'um' && L.eh('item', 1) && L.eh('sorteado', 2)) {
+    L.i += 3; L.espera('de');
+    const a = primario(L);
+    return async c => {
+      const l = lista(await a(c), linha);
+      if (!l.length) erro(linha, 'A lista está vazia, não tem o que sortear.');
+      return l[Math.floor(Math.random() * l.length)];
+    };
+  }
+  if (['o', 'a', 'os', 'as'].includes(n) && L.olha(1) && L.olha(1).t === 'pal') {
+    const p = L.olha(1); L.i += 2;
+    return propriedade(L, p);
+  }
+  const fn = L.prog.funcoes.get(n);
+  if (fn) {
+    L.i++;
+    const args = [];
+    if (fn.params.length) {
+      L.espera('de', `"${x.v}" precisa de ${fn.params.length} valor(es). Use assim: ${x.v} de ${fn.paramsOrig.join(' e ')}`);
+      args.push(exprJunto(L));
+      for (let k = 1; k < fn.params.length; k++) {
+        L.espera('e', `"${x.v}" precisa de ${fn.params.length} valores, separados por "e". Use assim: ${x.v} de ${fn.paramsOrig.join(' e ')}`);
+        args.push(exprJunto(L));
+      }
+    }
+    return async c => { const vs = []; for (const a of args) vs.push(await a(c)); return chamar(fn, vs, linha); };
+  }
+  L.i++;
+  return c => ler(c, n, x.v, linha);
+}
+
+function propriedade(L, p) {
+  const linha = L.num, prop = p.n;
+  if (prop === 'item') {
+    const idx = exprSoma(L); L.espera('de'); const alvo = primario(L);
+    return async c => {
+      const l = lista(await alvo(c), linha), k = num(await idx(c), linha);
+      if (!Number.isInteger(k) || k < 1 || k > l.length)
+        erro(linha, `A lista tem ${l.length} itens, então não existe o item ${texto(k)}. Os itens vão de 1 até ${l.length}.`);
+      return l[k - 1];
+    };
+  }
+  L.espera('de', `Depois de "${p.v}" eu esperava "de". Exemplo: o ${p.v} de alguma coisa.`);
+  const alvo = primario(L);
+  return async c => {
+    const v = await alvo(c);
+    switch (prop) {
+      case 'texto': return texto(v);
+      case 'tamanho': return Array.isArray(v) ? v.length : texto(v).length;
+      case 'primeiro': { const l = lista(v, linha); return l[0]; }
+      case 'ultimo': { const l = lista(v, linha); return l[l.length - 1]; }
+      case 'soma': return lista(v, linha).reduce((s, x) => s + num(x, linha), 0);
+      case 'maior': return Math.max(...lista(v, linha).map(x => num(x, linha)));
+      case 'menor': return Math.min(...lista(v, linha).map(x => num(x, linha)));
+      case 'media': { const l = lista(v, linha); return l.length ? l.reduce((s, x) => s + num(x, linha), 0) / l.length : 0; }
+      case 'palavras': return texto(v).trim().split(/\s+/).filter(Boolean);
+      case 'raiz': return Math.sqrt(num(v, linha));
+    }
+    if (v instanceof Ficha) {
+      if (!v.has(prop)) erro(linha, `A ficha não tem a informação "${p.v}".${talvez(p.v, [...v.keys()].map(k => G.originais.get(k) || k))}`);
+      return v.get(prop);
+    }
+    if (ehElemento(v)) {
+      if (prop === 'cor') return v.style.color;
+      if (prop === 'fundo') return v.style.background;
+    }
+    erro(linha, `Não sei pegar "o ${p.v} de" algo assim.`);
+  };
+}
+
+/* ───────────────────────── variáveis ───────────────────────── */
+
+function ler(c, n, orig, linha) {
+  if (c.local && c.local.has(n)) return c.local.get(n);
+  if (G.vars.has(n)) return G.vars.get(n);
+  if (G.els.has(n)) return G.els.get(n);
+  const conhecidos = [...G.originais.values()];
+  const s = sugestao(orig, conhecidos);
+  erro(linha, `"${orig}" ainda não tem valor.` + (s ? ` Você quis dizer "${s}"?` : ` Crie antes com: ${orig} vale ...`));
+}
+function guardar(c, n, orig, v, linha) {
+  if (G.els.has(n) && !G.vars.has(n))
+    erro(linha, `Já existe um elemento da página chamado "${orig}". Escolha outro nome para guardar o valor.`);
+  G.originais.set(n, orig);
+  if (c.local && (c.local.has(n) || !G.vars.has(n))) c.local.set(n, v);
+  else G.vars.set(n, v);
+}
+function elemento(nomeTok, linha) {
+  const el = G.els.get(nomeTok.n);
+  if (!el) {
+    const nomes = [...G.els.keys()].map(k => G.originais.get(k) || k);
+    erro(linha, `Não existe nenhum elemento chamado "${nomeTok.v}" na página.` +
+      (sugestao(nomeTok.v, nomes) ? ` Você criou um chamado "${sugestao(nomeTok.v, nomes)}". Era esse?` : ' Crie antes com: crie um botão chamado ' + nomeTok.v));
+  }
+  return el;
+}
+
+/* ───────────────────────── execução ───────────────────────── */
+
+const pausa = ms => new Promise(r => setTimeout(r, ms));
+async function rodarBloco(c, corpo) { for (const s of corpo) await s.run(c); }
+async function volta() { if (++G.voltas % 500 === 0) await pausa(0); }
+
+async function chamar(fn, args, linha) {
+  if (!fn.corpo) erro(linha, `"${fn.nome}" ainda não foi ensinado.`);
+  if (++G.profundidade > 500) {
+    G.profundidade = 0;
+    erro(linha, `"${fn.nome}" foi chamado dentro de si mesmo vezes demais (mais de 500). Ele precisa de um jeito de parar.`);
+  }
+  const local = new Map();
+  fn.params.forEach((p, k) => local.set(p, args[k]));
+  try { await rodarBloco({ local }, fn.corpo); return ''; }
+  catch (s) { if (s instanceof SinalResponder) return s.v; throw s; }
+  finally { G.profundidade--; }
+}
+
+/* ───────────────────────── layout desenhado ───────────────────────── */
+
+const ident = nome => 'obj_' + semAcento(nome).replace(/[^a-z0-9_-]/g, '_');
+
+function compilarLayout(brutas) {
+  const linhas = [];
+  for (const { num, txt } of brutas) {
+    const t = txt.trim();
+    if (!t || t.startsWith('--')) continue;
+    if (txt.includes('\t')) erro(num, 'Use espaços, não tab, dentro do desenho do layout. O tab muda de tamanho em cada editor e desalinha as caixas.');
+    const segs = [], re = /\[([^\]]*)\]/g;
+    let m;
+    while ((m = re.exec(txt))) {
+      const nome = m[1].trim();
+      if (nome && nome !== '.' && !/^[\p{L}\p{N}_-]+$/u.test(nome))
+        erro(num, `O nome "${nome}" no desenho tem caracteres que não podem. Use só letras, números, _ e -.`);
+      segs.push({ nome: nome === '.' ? '' : nome, ini: m.index, fim: m.index + m[0].length });
+    }
+    const fora = txt.replace(re, '').trim();
+    if (fora) erro(num, `No desenho do layout, tudo precisa estar dentro de colchetes [ ]. Sobrou: "${fora}".`);
+    linhas.push({ num, segs });
+  }
+  if (!linhas.length) erro(brutas.length ? brutas[0].num : 0, 'O desenho do layout está vazio. Desenhe as áreas com colchetes, por exemplo: [ topo ]');
+
+  const bs = [];
+  linhas.forEach(l => l.segs.forEach(s => bs.push(s.ini, s.fim)));
+  bs.sort((a, b) => a - b);
+  const grupos = [];
+  for (const b of bs) if (!grupos.length || b - grupos[grupos.length - 1] > 2) grupos.push(b);
+  const col = b => { let best = 0, bd = Infinity; grupos.forEach((g, k) => { const d = Math.abs(g - b); if (d < bd) { bd = d; best = k; } }); return best; };
+
+  const ncol = grupos.length - 1;
+  const grade = linhas.map(() => Array(ncol).fill('.'));
+  const nomes = new Map();
+  linhas.forEach((l, r) => l.segs.forEach(s => {
+    const a = col(s.ini), b = col(s.fim);
+    if (a === b) erro(l.num, `A caixa "[${s.nome}]" ficou estreita demais. Deixe ela um pouco mais larga.`);
+    const id = s.nome ? ident(s.nome) : '.';
+    if (s.nome) nomes.set(norm(s.nome), id);
+    for (let k = a; k < b; k++) grade[r][k] = id;
+  }));
+  for (const [n, id] of nomes) {
+    let r0 = Infinity, r1 = -1, c0 = Infinity, c1 = -1, total = 0;
+    grade.forEach((row, r) => row.forEach((x, k) => { if (x === id) { total++; r0 = Math.min(r0, r); r1 = Math.max(r1, r); c0 = Math.min(c0, k); c1 = Math.max(c1, k); } }));
+    if (total !== (r1 - r0 + 1) * (c1 - c0 + 1))
+      erro(linhas[r0].num, `A área "${n}" não forma um retângulo no desenho. Uma área que aparece em várias linhas precisa ter a mesma largura e posição em todas.`);
+  }
+  return {
+    colunas: grupos.slice(1).map((g, k) => (g - grupos[k]) + 'fr').join(' '),
+    areas: grade.map(r => `"${r.join(' ')}"`).join(' '),
+    nlinhas: linhas.length,
+    nomes,
+  };
+}
+function aplicarLayout(cont, lay, ehPagina) {
+  cont.style.display = 'grid';
+  cont.style.gridTemplateColumns = lay.colunas;
+  cont.style.gridTemplateAreas = lay.areas;
+  const n = lay.nlinhas;
+  cont.style.gridTemplateRows = !ehPagina ? `repeat(${n}, auto)`
+    : n === 1 ? '1fr' : n === 2 ? 'auto 1fr' : `auto repeat(${n - 2}, 1fr) auto`;
+  cont._areas = lay.nomes;
+  for (const filho of cont.children) {
+    const id = lay.nomes.get(filho.dataset.nome);
+    if (id) filho.style.gridArea = id;
+  }
+}
+
+/* ───────────────────────── aparência ───────────────────────── */
+
+const TIPOS = {
+  'titulo': 'h1', 'subtitulo': 'h2', 'texto': 'p', 'botao': 'button', 'area': 'div',
+  'caixa de texto': 'input', 'imagem': 'img', 'link': 'a', 'lista': 'ul', 'item': 'li', 'linha': 'hr',
+};
+const NOMES_TIPOS = ['título', 'subtítulo', 'texto', 'botão', 'área', 'caixa de texto', 'imagem', 'link', 'lista', 'item', 'linha'];
+
+const PROPS_APARENCIA = {
+  'cor': (v, l) => ['color', corCss(v, l)],
+  'fundo': (v, l) => ['background', corCss(v, l)],
+  'tamanho': (v, l) => ['font-size', tamanhoCss(pareceNumero(v) ? v : v, l)],
+  'cantos': (v, l) => ['border-radius', { redondos: '12px', arredondados: '12px', retos: '0', suaves: '6px', bola: '999px' }[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, `Cantos podem ser: retos, suaves, redondos, bola ou um número.`))],
+  'espaco dentro': (v, l) => ['padding', ESPACOS[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Espaço pode ser: nenhum, pequeno, médio, grande, enorme ou um número.'))],
+  'espaco fora': (v, l) => ['margin', ESPACOS[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Espaço pode ser: nenhum, pequeno, médio, grande, enorme ou um número.'))],
+  'sombra': (v, l) => ['box-shadow', { leve: '0 2px 8px rgba(0,0,0,.18)', forte: '0 10px 28px rgba(0,0,0,.35)', nenhuma: 'none' }[semAcento(v)] || erro(l, 'Sombra pode ser: leve, forte ou nenhuma.')],
+  'letra': (v, l) => {
+    const s = semAcento(v);
+    if (s === 'negrito') return ['font-weight', '700'];
+    if (s === 'normal') return ['font-weight', '400'];
+    if (s === 'italico') return ['font-style', 'italic'];
+    if (s === 'fina') return ['font-weight', '300'];
+    erro(l, 'Letra pode ser: negrito, normal, fina ou itálico.');
+  },
+  'borda': (v, l) => {
+    const s = semAcento(v);
+    if (s === 'nenhuma') return ['border', 'none'];
+    if (s === 'fina') return ['border', '1px solid currentColor'];
+    if (s === 'grossa') return ['border', '3px solid currentColor'];
+    return ['border', '2px solid ' + corCss(v, l)];
+  },
+  'alinhamento': (v, l) => ['text-align', { centro: 'center', centralizado: 'center', esquerda: 'left', direita: 'right' }[semAcento(v)] || erro(l, 'Alinhamento pode ser: esquerda, centro ou direita.')],
+  'largura': (v, l) => ['width', { cheia: '100%', metade: '50%', automatica: 'auto' }[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Largura pode ser: cheia, metade, automática ou um número.'))],
+  'altura': (v, l) => ['height', { cheia: '100%', automatica: 'auto' }[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Altura pode ser: cheia, automática ou um número.'))],
+};
+
+function compilarAparencia(alvoTxt, brutas, linhaAbre) {
+  const alvo = semAcento(alvoTxt.trim());
+  let seletor;
+  if (alvo === 'pagina') seletor = 'body';
+  else if (TIPOS[alvo]) seletor = `#objetivo-raiz [data-tipo="${alvo.replace(/ /g, '-')}"]`;
+  else seletor = `#objetivo-raiz [data-nome="${alvo}"][data-nome]`;
+  const regras = [];
+  for (const { num, txt } of brutas) {
+    const t = txt.trim();
+    if (!t || t.startsWith('--')) continue;
+    const k = t.indexOf(':');
+    if (k < 0) erro(num, `Dentro da aparência, cada linha é "característica: valor". Exemplo: cor: azul`);
+    const chave = semAcento(t.slice(0, k).trim()), valor = t.slice(k + 1).trim();
+    const f = PROPS_APARENCIA[chave];
+    if (!f) erro(num, `Não conheço a característica "${t.slice(0, k).trim()}".${talvez(chave, Object.keys(PROPS_APARENCIA))}`);
+    if (!valor) erro(num, `Faltou o valor depois de "${t.slice(0, k).trim()}:".`);
+    const [p, v] = f(valor, num);
+    regras.push(`${p}:${v}`);
+  }
+  return `${seletor}{${regras.join(';')}}`;
+}
+
+/* ───────────────────────── comandos ───────────────────────── */
+
+const TECLAS = { espaco: ' ', enter: 'Enter', esquerda: 'ArrowLeft', direita: 'ArrowRight', cima: 'ArrowUp', baixo: 'ArrowDown', esc: 'Escape' };
+
+class Programa {
+  constructor(fonte) {
+    this.linhas = fonte.split(/\r?\n/);
+    this.i = 0;
+    this.funcoes = new Map();
+    this.prepararFuncoes();
+  }
+  prepararFuncoes() {
+    this.linhas.forEach((txt, k) => {
+      if (!/^\s*ensine\s/i.test(txt)) return;
+      const t = tokenizar(txt, k + 1);
+      const L = new Linha(t, k + 1, this); L.i = 1;
+      const nome = L.nome('o nome do que você quer ensinar');
+      const params = this.lerParams(L);
+      if (this.funcoes.has(nome.n)) erro(k + 1, `"${nome.v}" já foi ensinado antes. Use outro nome.`);
+      this.funcoes.set(nome.n, { nome: nome.v, params: params.map(p => p.n), paramsOrig: params.map(p => p.v), corpo: null });
+    });
+  }
+  lerParams(L) {
+    const ps = [];
+    if (L.aceita('de')) {
+      do ps.push(L.nome('o nome de um valor que ele recebe'));
+      while (L.aceita('e') || (L.ehSim(',') && ++L.i));
+    }
+    return ps;
+  }
+  analisar() { return this.bloco(null, 0).corpo; }
+
+  /* lê linhas até "fim" (ou até uma parada, como "senão") */
+  bloco(abridor, linhaAbre, parada) {
+    const corpo = [];
+    while (this.i < this.linhas.length) {
+      const num = this.i + 1, txt = this.linhas[this.i];
+      const t = tokenizar(txt, num);
+      if (!t.length) { this.i++; continue; }
+      const L = new Linha(t, num, this);
+      if (L.eh('fim')) {
+        this.i++;
+        if (!abridor) erro(num, 'Tem um "fim" sobrando: não há nenhum bloco aberto para ele fechar.');
+        L.i = 1; L.aceita('do', 'da', 'de');
+        const resto = t.slice(L.i).map(x => x.n).join(' '), restoOrig = t.slice(L.i).map(x => x.v).join(' ');
+        if (resto && resto !== semAcento(abridor))
+          erro(num, `Este "fim" fecha "${restoOrig}", mas o bloco aberto é o "${abridor}" da linha ${linhaAbre}. Era pra ser "fim do ${abridor}"?`);
+        return { corpo, fim: true };
+      }
+      if (parada && parada(L)) { this.i++; return { corpo, parou: L }; }
+      this.i++;
+      corpo.push(this.comando(L));
+    }
+    if (abridor) erro(linhaAbre, `O "${abridor}" desta linha não foi fechado. Coloque "fim do ${abridor}" no final dele.`);
+    return { corpo };
+  }
+  blocoBruto(abridor, linhaAbre) {
+    const brutas = [];
+    while (this.i < this.linhas.length) {
+      const num = this.i + 1, txt = this.linhas[this.i++];
+      if (/^\s*fim\b/i.test(txt)) return brutas;
+      brutas.push({ num, txt });
+    }
+    erro(linhaAbre, `O "${abridor}" desta linha não foi fechado. Coloque "fim do ${abridor}" no final dele.`);
+  }
+
+  comando(L) {
+    const linha = L.num, p = L.olha();
+    const run = f => ({ linha, run: f });
+
+    if (p.t === 'pal' && L.eh('vale', 1)) {
+      L.i += 2; const e = expr(L); L.fimDaLinha();
+      return run(async c => guardar(c, p.n, p.v, await e(c), linha));
+    }
+    if (p.t !== 'pal') erro(linha, `Uma linha precisa começar com um comando, como "escreva" ou "crie". Encontrei "${p.v}".`);
+
+    switch (p.n) {
+      case 'pagina': {
+        L.i++; const e = expr(L); L.fimDaLinha();
+        return run(async c => { document.title = texto(await e(c)); });
+      }
+      case 'use': {
+        L.i++; L.artigo();
+        if (L.aceita('tema')) {
+          const t = L.nome('o nome do tema (claro ou escuro)'); L.fimDaLinha();
+          if (!['claro', 'escuro'].includes(t.n)) erro(linha, `Não conheço o tema "${t.v}". Use "claro" ou "escuro".`);
+          return run(() => { document.body.classList.toggle('obj-escuro', t.n === 'escuro'); });
+        }
+        erro(linha, 'Por enquanto "use" só funciona com tema: use o tema escuro');
+      }
+      case 'arrume': {
+        L.i++;
+        let alvo = null;
+        if (L.eh('a') && L.eh('pagina', 1)) L.i += 2;
+        else alvo = L.nome('o nome do elemento que vai ser arrumado');
+        L.espera('assim', 'Termine a linha com "assim". Exemplo: arrume a página assim');
+        L.fimDaLinha();
+        const lay = compilarLayout(this.blocoBruto('arrume', linha));
+        return run(() => aplicarLayout(alvo ? elemento(alvo, linha) : G.raiz, lay, !alvo));
+      }
+      case 'aparencia': {
+        L.i++; L.espera('de', 'Diga de quem é a aparência. Exemplo: aparência de botão');
+        const alvo = L.t.slice(L.i).map(x => x.v).join(' ');
+        if (!alvo) erro(linha, 'Diga de quem é a aparência. Exemplo: aparência de botão');
+        const css = compilarAparencia(alvo, this.blocoBruto('aparência', linha), linha);
+        return run(() => { G.estilo.textContent += css + '\n'; });
+      }
+      case 'crie': {
+        L.i++; L.artigo();
+        const palavras = [];
+        while (!L.acabou && !L.eh('chamado') && !L.eh('chamada') && !L.eh('com') && !L.eh('dentro')) palavras.push(L.nome('o tipo do elemento'));
+        const tipo = palavras.map(x => x.n).join(' '), tipoOrig = palavras.map(x => x.v).join(' ');
+        if (!TIPOS[tipo]) erro(linha, `Não sei criar "${tipoOrig}".${talvez(tipoOrig, NOMES_TIPOS)} Dá pra criar: ${NOMES_TIPOS.join(', ')}.`);
+        let nome = null, conteudo = null, dentro = null;
+        if (L.aceita('chamado', 'chamada')) nome = L.nome('o nome do elemento');
+        if (L.aceita('com')) conteudo = exprJunto(L);
+        if (L.aceita('dentro')) { L.espera('de'); dentro = L.nome('o nome do elemento onde ele vai ficar'); }
+        L.fimDaLinha();
+        return run(async c => {
+          if (nome && G.els.has(nome.n)) erro(linha, `Já existe um elemento chamado "${nome.v}". Cada elemento precisa de um nome diferente.`);
+          const el = tipo === 'imagem' ? caixaDeImagem(nome, !conteudo) : document.createElement(TIPOS[tipo]);
+          el.dataset.tipo = tipo.replace(/ /g, '-');
+          if (conteudo) {
+            const v = texto(await conteudo(c));
+            if (tipo === 'imagem') porImagem(el, v);
+            else if (tipo === 'caixa de texto') el.placeholder = v;
+            else el.textContent = v;
+          }
+          const pai = dentro ? elemento(dentro, linha) : G.raiz;
+          if (nome) {
+            el.dataset.nome = nome.n;
+            G.els.set(nome.n, el); G.originais.set(nome.n, nome.v);
+            const id = pai._areas && pai._areas.get(nome.n);
+            if (id) el.style.gridArea = id;
+          }
+          pai.appendChild(el);
+        });
+      }
+      case 'escreva': {
+        L.i++; const e = expr(L); L.fimDaLinha();
+        return run(async c => {
+          const el = document.createElement('p');
+          el.dataset.tipo = 'texto';
+          el.textContent = texto(await e(c));
+          (G.els.get('saida') || G.raiz).appendChild(el);
+        });
+      }
+      case 'mostre': {
+        L.i++;
+        if (L.eh('o') && L.eh('aviso', 1) || L.eh('aviso')) {
+          L.aceita('o'); L.i++;
+          const e = expr(L); L.fimDaLinha();
+          return run(async c => aviso(texto(await e(c))));
+        }
+        const n = L.nome('o nome do elemento'); L.fimDaLinha();
+        return run(() => { elemento(n, linha).hidden = false; });
+      }
+      case 'esconda': case 'apague': {
+        L.i++; const n = L.nome('o nome do elemento'); L.fimDaLinha();
+        return run(() => {
+          const el = elemento(n, linha);
+          if (p.n === 'esconda') el.hidden = true;
+          else { el.remove(); G.els.delete(n.n); }
+        });
+      }
+      case 'mude': case 'pinte': {
+        L.i++;
+        let prop;
+        if (p.n === 'pinte') {
+          prop = 'cor';
+          if ((L.eh('o') && L.eh('fundo', 1))) { L.i += 2; L.espera('de'); prop = 'fundo'; }
+        } else {
+          L.artigo();
+          prop = L.nome('o que você quer mudar (texto, cor, fundo, tamanho...)').n;
+          L.espera('de', `Use assim: mude o ${prop} de algum_elemento para ...`);
+        }
+        const alvo = L.nome('o nome de quem vai mudar');
+        L.espera(p.n === 'pinte' ? 'de' : 'para', p.n === 'pinte' ? 'Use assim: pinte topo de azul' : `Faltou o "para". Use assim: mude o ${prop} de ${alvo.v} para ...`);
+        let valor;
+        if ((prop === 'cor' || prop === 'fundo') && L.palavrasRestantes() && L.olha() && (CORES[L.olha().n] || L.olha().v.startsWith('#'))) {
+          const cor = L.t.slice(L.i).map(x => x.v).join(' '); L.i = L.t.length;
+          valor = () => cor;
+        } else valor = expr(L);
+        L.fimDaLinha();
+        return run(async c => {
+          const v = await valor(c);
+          const el = G.els.get(alvo.n);
+          if (!el) {
+            const ficha = (c.local && c.local.get(alvo.n)) || G.vars.get(alvo.n);
+            if (ficha instanceof Ficha) { ficha.set(prop, v); return; }
+            elemento(alvo, linha);
+          }
+          switch (prop) {
+            case 'texto': if (el.tagName === 'INPUT') el.value = texto(v); else el.textContent = texto(v); break;
+            case 'cor': el.style.color = corCss(texto(v), linha); break;
+            case 'fundo': el.style.background = corCss(texto(v), linha); break;
+            case 'tamanho': el.style.fontSize = tamanhoCss(v, linha); break;
+            case 'imagem':
+              if (!el.classList.contains('obj-imagem')) erro(linha, `"${alvo.v}" não é uma imagem.`);
+              porImagem(el, texto(v)); break;
+            case 'largura': el.style.width = num(v, linha) + 'px'; break;
+            case 'altura': el.style.height = num(v, linha) + 'px'; break;
+            default: erro(linha, `Não sei mudar "${prop}" de um elemento.${talvez(prop, ['texto', 'cor', 'fundo', 'tamanho', 'imagem', 'largura', 'altura'])}`);
+          }
+        });
+      }
+      case 'aumente': case 'diminua': {
+        L.i++; const n = L.nome('o nome do valor');
+        let quanto = () => 1;
+        if (L.aceita('em')) quanto = exprSoma(L);
+        L.fimDaLinha();
+        const sinal = p.n === 'aumente' ? 1 : -1;
+        return run(async c => guardar(c, n.n, n.v, num(ler(c, n.n, n.v, linha), linha) + sinal * num(await quanto(c), linha), linha));
+      }
+      case 'adicione': {
+        L.i++; const e = exprJunto(L);
+        L.espera('em', 'Use assim: adicione "uva" em frutas');
+        const n = L.nome('o nome da lista'); L.fimDaLinha();
+        return run(async c => { lista(ler(c, n.n, n.v, linha), linha).push(await e(c)); });
+      }
+      case 'remova': {
+        L.i++; const e = exprJunto(L);
+        L.espera('de', 'Use assim: remova "uva" de frutas');
+        const n = L.nome('o nome da lista'); L.fimDaLinha();
+        return run(async c => {
+          const l = lista(ler(c, n.n, n.v, linha), linha), v = await e(c);
+          const k = l.findIndex(x => igual(x, v));
+          if (k < 0) erro(linha, `"${texto(v)}" não está na lista ${n.v}, então não dá pra remover.`);
+          l.splice(k, 1);
+        });
+      }
+      case 'pergunte': {
+        L.i++; const e = exprJunto(L);
+        L.espera('e', 'Use assim: pergunte "Seu nome?" e guarde em nome'); L.espera('guarde'); L.espera('em');
+        const n = L.nome('o nome onde guardar a resposta'); L.fimDaLinha();
+        return run(async c => {
+          let r = window.prompt(texto(await e(c))) ?? '';
+          guardar(c, n.n, n.v, pareceNumero(r) ? num(r) : r, linha);
+        });
+      }
+      case 'se': {
+        L.i++;
+        const casos = [];
+        let cond = expr(L); L.aceita('entao'); L.fimDaLinha();
+        let senao = null, abre = linha;
+        const ehSenao = M => M.eh('senao');
+        for (;;) {
+          const r = this.bloco('se', abre, ehSenao);
+          casos.push([cond, r.corpo]);
+          if (r.fim) break;
+          const M = r.parou; M.i = 1;
+          if (M.aceita('se')) { cond = expr(M); M.aceita('entao'); M.fimDaLinha(); abre = M.num; continue; }
+          M.fimDaLinha();
+          senao = this.bloco('se', abre).corpo;
+          break;
+        }
+        return run(async c => {
+          for (const [cd, corpo] of casos) if (verdade(await cd(c))) return rodarBloco(c, corpo);
+          if (senao) await rodarBloco(c, senao);
+        });
+      }
+      case 'repita': {
+        L.i++;
+        const sempre = L.eh('para') && L.eh('sempre', 1);
+        let vezes;
+        if (sempre) L.i += 2;
+        else { vezes = exprSoma(L); L.espera('vezes', 'Use assim: repita 5 vezes'); }
+        L.fimDaLinha();
+        const corpo = this.bloco('repita', linha).corpo;
+        return run(async c => {
+          const n = sempre ? Infinity : num(await vezes(c), linha);
+          for (let k = 0; k < n; k++) { if (await laco(c, corpo)) break; await volta(); }
+        });
+      }
+      case 'para': {
+        L.i++; L.espera('cada', 'Use assim: para cada n de 1 até 10   ou   para cada fruta em frutas');
+        const v = L.nome('o nome que cada valor vai receber');
+        if (L.aceita('de')) {
+          const a = exprSoma(L); L.espera('ate', 'Use assim: para cada n de 1 até 10'); const b = exprSoma(L); L.fimDaLinha();
+          const corpo = this.bloco('para', linha).corpo;
+          return run(async c => {
+            const ini = num(await a(c), linha), fim = num(await b(c), linha), passo = ini <= fim ? 1 : -1;
+            for (let k = ini; passo > 0 ? k <= fim : k >= fim; k += passo) {
+              guardar(c, v.n, v.v, k, linha);
+              if (await laco(c, corpo)) break; await volta();
+            }
+          });
+        }
+        L.espera('em', 'Use assim: para cada fruta em frutas'); const e = expr(L); L.fimDaLinha();
+        const corpo = this.bloco('para', linha).corpo;
+        return run(async c => {
+          for (const item of [...lista(await e(c), linha)]) {
+            guardar(c, v.n, v.v, item, linha);
+            if (await laco(c, corpo)) break; await volta();
+          }
+        });
+      }
+      case 'enquanto': {
+        L.i++; const cond = expr(L); L.fimDaLinha();
+        const corpo = this.bloco('enquanto', linha).corpo;
+        return run(async c => { while (verdade(await cond(c))) { if (await laco(c, corpo)) break; await volta(); } });
+      }
+      case 'pare': {
+        L.i++;
+        if (L.aceita('de')) { L.espera('repetir'); L.fimDaLinha(); return run(() => { throw new Sinal('parar-repetir', linha); }); }
+        L.fimDaLinha(); return run(() => { throw new Sinal('pare', linha); });
+      }
+      case 'pule': { L.i++; L.fimDaLinha(); return run(() => { throw new Sinal('pule', linha); }); }
+      case 'espere': {
+        L.i++; const e = exprSoma(L);
+        let fator = 1000;
+        if (L.aceita('milissegundo', 'milissegundos')) fator = 1;
+        else if (L.aceita('minuto', 'minutos')) fator = 60000;
+        else L.espera(L.eh('segundo') ? 'segundo' : 'segundos', 'Use assim: espere 2 segundos');
+        L.fimDaLinha();
+        return run(async c => pausa(num(await e(c), linha) * fator));
+      }
+      case 'a': {
+        if (!L.eh('cada', 1)) break;
+        L.i += 2; const e = exprSoma(L);
+        let fator = 1000;
+        if (L.aceita('milissegundo', 'milissegundos')) fator = 1;
+        else if (L.aceita('minuto', 'minutos')) fator = 60000;
+        else L.espera(L.eh('segundo') ? 'segundo' : 'segundos', 'Use assim: a cada 1 segundo');
+        L.fimDaLinha();
+        const corpo = this.bloco('a cada', linha).corpo;
+        return run(async c => {
+          const ms = Math.max(16, num(await e(c), linha) * fator);
+          let ocupado = false;
+          const id = setInterval(async () => {
+            if (ocupado) return;
+            ocupado = true;
+            try { await rodarBloco({ local: null }, corpo); }
+            catch (s) {
+              if (s instanceof Sinal && s.tipo === 'parar-repetir') clearInterval(id);
+              else { clearInterval(id); mostrarErro(s); }
+            } finally { ocupado = false; }
+          }, ms);
+        });
+      }
+      case 'quando': {
+        L.i++;
+        let alvo = null, evento, tecla = null;
+        if (L.aceita('clicar')) { L.espera('em', 'Use assim: quando clicar em enviar'); alvo = L.nome('o nome do elemento'); evento = 'click'; }
+        else if (L.aceita('digitar')) { L.espera('em', 'Use assim: quando digitar em campo'); alvo = L.nome('o nome do elemento'); evento = 'input'; }
+        else if (L.aceita('colocar')) {
+          L.aceita('uma', 'a'); L.espera('imagem', 'Use assim: quando colocar imagem em foto');
+          L.espera('em', 'Use assim: quando colocar imagem em foto'); alvo = L.nome('o nome da imagem'); evento = 'obj-imagem';
+        }
+        else if (L.aceita('passar')) { L.espera('o'); L.espera('mouse'); L.espera('em'); alvo = L.nome('o nome do elemento'); evento = 'mouseenter'; }
+        else if (L.aceita('apertar')) {
+          L.artigo(); L.espera('tecla', 'Use assim: quando apertar a tecla "espaço"');
+          const t = L.olha(); if (!t || t.t !== 'txt') erro(linha, 'Escreva a tecla entre aspas. Exemplo: quando apertar a tecla "espaço"');
+          L.i++; tecla = TECLAS[semAcento(t.v)] || t.v; evento = 'keydown';
+        } else if (L.eh('a') && L.eh('pagina', 1)) { L.i += 2; L.espera('abrir'); evento = 'abrir'; }
+        else erro(linha, 'Depois de "quando" eu entendo: clicar em, digitar em, passar o mouse em, colocar imagem em, apertar a tecla, a página abrir.');
+        L.fimDaLinha();
+        const corpo = this.bloco('quando', linha).corpo;
+        const disparar = async () => { try { await rodarBloco({ local: null }, corpo); } catch (s) { mostrarErro(s); } };
+        return run(() => {
+          if (evento === 'abrir') { G.aoAbrir.push(disparar); return; }
+          if (evento === 'keydown') {
+            document.addEventListener('keydown', ev => {
+              if (ev.key === tecla || ev.key.toLowerCase() === String(tecla).toLowerCase()) {
+                if (ev.target.tagName !== 'INPUT') ev.preventDefault();
+                disparar();
+              }
+            });
+            return;
+          }
+          elemento(alvo, linha).addEventListener(evento, disparar);
+        });
+      }
+      case 'ensine': {
+        L.i++; const nome = L.nome(); this.lerParams(L); L.fimDaLinha();
+        this.funcoes.get(nome.n).corpo = this.bloco('ensine', linha).corpo;
+        return run(() => {});
+      }
+      case 'responda': {
+        L.i++; const e = L.acabou ? () => '' : expr(L); L.fimDaLinha();
+        return run(async c => { if (!c.local) erro(linha, '"responda" só funciona dentro de um "ensine".'); throw new SinalResponder(await e(c)); });
+      }
+      case 'espie': {
+        L.i++; const n = L.nome('o nome do valor que você quer espiar'); L.fimDaLinha();
+        return run(c => { G.espiados.set(n.n, n.v); ler(c, n.n, n.v, linha); abrirEspiao(); });
+      }
+      case 'tente': {
+        L.i++; L.fimDaLinha();
+        const ehErro = M => M.eh('se') && M.eh('der', 1) && M.eh('errado', 2);
+        const r = this.bloco('tente', linha, ehErro);
+        const plano = r.fim ? [] : this.bloco('tente', linha).corpo;
+        return run(async c => {
+          try { await rodarBloco(c, r.corpo); }
+          catch (e) { if (e instanceof ErroObjetivo || !(e instanceof Sinal || e instanceof SinalResponder)) await rodarBloco(c, plano); else throw e; }
+        });
+      }
+      case 'senao':
+        erro(linha, 'Este "senão" está sozinho: ele precisa vir dentro de um "se", antes do "fim do se".');
+    }
+
+    const fn = this.funcoes.get(p.n);
+    if (fn) { const e = expr(L); L.fimDaLinha(); return run(async c => { await e(c); }); }
+
+    const s = sugestao(p.v, [...COMANDOS, ...[...this.funcoes.values()].map(f => f.nome)]);
+    if (L.eh('vale', 1) === false && L.olha(1) && L.olha(1).t === 'pal' && sugestao(L.olha(1).v, ['vale']))
+      erro(linha, `Para guardar um valor, use "vale". Exemplo: ${p.v} vale 10`);
+    erro(linha, `Não conheço o comando "${p.v}".` + (s ? ` Você quis dizer "${s}"?` : ' Para guardar um valor, use: nome vale ...'));
+  }
+}
+
+async function laco(c, corpo) {
+  try { await rodarBloco(c, corpo); return false; }
+  catch (s) {
+    if (s instanceof Sinal && s.tipo === 'pare') return true;
+    if (s instanceof Sinal && s.tipo === 'pule') return false;
+    throw s;
+  }
+}
+
+/* ───────────────────────── imagens arrastadas ───────────────────────── */
+
+const chaveImagem = nome => `objetivo:${location.pathname}:imagem:${nome}`;
+const arquivoImagem = nome => nome.replace(/[^a-z0-9_-]/g, '_').slice(0, 64);
+const EXTENSOES = ['png', 'jpg', 'webp', 'gif', 'avif'];
+
+/* Procura imagens/<nome>.png, .jpg... no projeto; se não achar, usa a cópia salva no navegador. */
+function carregarSalva(el, nome) {
+  const img = el.querySelector('img'), base = 'imagens/' + arquivoImagem(nome.n);
+  let k = 0;
+  const tenta = () => {
+    if (k >= EXTENSOES.length) {
+      img.onerror = img.onload = null;
+      let s = null;
+      try { s = localStorage.getItem(chaveImagem(nome.n)); } catch {}
+      if (s) porImagem(el, s);
+      return;
+    }
+    img.onerror = tenta;
+    img.onload = () => { img.onerror = img.onload = null; el.classList.remove('vazia'); };
+    img.src = `${base}.${EXTENSOES[k++]}`;
+  };
+  tenta();
+}
+
+/* Envia para o servidor.py guardar na pasta imagens/. Devolve false se não der. */
+async function salvarNoServidor(nome, dados) {
+  try {
+    const blob = await (await fetch(dados)).blob();
+    const r = await fetch('__objetivo/imagem?nome=' + encodeURIComponent(arquivoImagem(nome)), {
+      method: 'POST', headers: { 'Content-Type': blob.type }, body: blob,
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
+/* Endereço de uma imagem arrastada de outra página. */
+function urlArrastada(dt) {
+  const html = dt.getData('text/html');
+  const m = html && /<img[^>]+src\s*=\s*["']([^"']+)["']/i.exec(html);
+  if (m) return m[1].replace(/&amp;/g, '&');
+  const uri = (dt.getData('text/uri-list') || '').split(/\r?\n/).map(s => s.trim()).find(s => s && !s.startsWith('#'));
+  return uri || null;
+}
+
+/* Pede para o servidor.py baixar a imagem do site para a pasta imagens/. */
+async function baixarNoServidor(nome, url) {
+  try {
+    const r = await fetch('__objetivo/imagem-url?nome=' + encodeURIComponent(arquivoImagem(nome)), {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: url,
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
+function caixaDeImagem(nome, procurarSalva) {
+  const el = document.createElement('div');
+  el.className = 'obj-imagem vazia';
+  const img = document.createElement('img');
+  img.alt = '';
+  const dica = document.createElement('span');
+  dica.textContent = 'Arraste uma imagem para cá';
+  el.append(img, dica);
+
+  el.addEventListener('dragover', ev => { ev.preventDefault(); el.classList.add('sobre'); });
+  el.addEventListener('dragleave', () => el.classList.remove('sobre'));
+  el.addEventListener('drop', async ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    el.classList.remove('sobre');
+    const arq = [...(ev.dataTransfer.files || [])].find(f => f.type.startsWith('image/'));
+    try {
+      let dados;
+      if (arq) dados = await lerImagem(arq);
+      else {
+        // arrastada de um site: o navegador entrega só o endereço
+        const url = urlArrastada(ev.dataTransfer);
+        if (!url) { aviso('Isso não é uma imagem. Arraste uma foto do computador ou de um site.'); return; }
+        if (url.startsWith('data:image/')) dados = url;
+        else {
+          porImagem(el, url);
+          if (nome) {
+            if (await baixarNoServidor(nome.n, url)) {
+              try { localStorage.removeItem(chaveImagem(nome.n)); } catch {}
+            } else {
+              try { localStorage.setItem(chaveImagem(nome.n), url); } catch {}
+              aviso('Imagem salva só neste navegador. Para aparecer em outros computadores, abra o site com o servidor.py');
+            }
+          }
+          el.dispatchEvent(new CustomEvent('obj-imagem'));
+          return;
+        }
+      }
+      porImagem(el, dados);
+      if (nome) {
+        if (await salvarNoServidor(nome.n, dados)) {
+          try { localStorage.removeItem(chaveImagem(nome.n)); } catch {}
+        } else {
+          try {
+            localStorage.setItem(chaveImagem(nome.n), dados);
+            aviso('Imagem salva só neste navegador. Para aparecer em outros computadores, abra o site com o servidor.py');
+          } catch { aviso('A imagem é grande demais para ficar salva. Ela some quando a página recarregar.'); }
+        }
+      }
+      el.dispatchEvent(new CustomEvent('obj-imagem'));
+    } catch { aviso('Não consegui abrir essa imagem.'); }
+  });
+
+  if (nome && procurarSalva) carregarSalva(el, nome);
+  return el;
+}
+
+function porImagem(el, src) {
+  el.querySelector('img').src = src;
+  el.classList.remove('vazia');
+}
+
+/* Reduz fotos grandes para caberem salvas no navegador. */
+function lerImagem(arq) {
+  return new Promise((ok, falha) => {
+    const r = new FileReader();
+    r.onerror = falha;
+    r.onload = () => {
+      if (arq.type === 'image/gif' || arq.type === 'image/svg+xml') return ok(r.result);
+      const img = new Image();
+      img.onerror = falha;
+      img.onload = () => {
+        const k = Math.min(1, 1200 / Math.max(img.width, img.height));
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        ok(cv.toDataURL(arq.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.85));
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(arq);
+  });
+}
+
+/* ───────────────────────── interface: erros, avisos, espião ───────────────────────── */
+
+function aviso(msg) {
+  const el = document.createElement('div');
+  el.className = 'obj-aviso';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.classList.add('obj-sai'), 2800);
+  setTimeout(() => el.remove(), 3200);
+}
+
+function mostrarErro(e) {
+  let linha = null, msg;
+  if (e instanceof ErroObjetivo) { linha = e.linha; msg = e.message; }
+  else if (e instanceof Sinal) {
+    linha = e.linha;
+    msg = e.tipo === 'parar-repetir' ? '"pare de repetir" só funciona dentro de um "a cada".'
+        : `"${e.tipo}" só funciona dentro de uma repetição (repita, para cada, enquanto).`;
+  } else if (e instanceof SinalResponder) msg = '"responda" só funciona dentro de um "ensine".';
+  else { msg = 'Erro interno do interpretador: ' + (e && e.message); console.error(e); }
+
+  let caixa = document.querySelector('.obj-erro');
+  if (!caixa) { caixa = document.createElement('div'); caixa.className = 'obj-erro'; document.body.appendChild(caixa); }
+  caixa.innerHTML = '';
+  const t = document.createElement('strong');
+  t.textContent = linha ? `Erro na linha ${linha}` : 'Erro';
+  const m = document.createElement('p'); m.textContent = msg;
+  caixa.append(t, m);
+  if (linha && G.fonte[linha - 1] !== undefined) {
+    const cod = document.createElement('code'); cod.textContent = G.fonte[linha - 1].trim();
+    caixa.appendChild(cod);
+  }
+  const x = document.createElement('button'); x.textContent = '×'; x.onclick = () => caixa.remove();
+  caixa.appendChild(x);
+  console.error(`[Objetivo] linha ${linha}: ${msg}`);
+}
+
+let espiao = null;
+function abrirEspiao() {
+  if (espiao) return;
+  espiao = document.createElement('div');
+  espiao.className = 'obj-espiao';
+  document.body.appendChild(espiao);
+  setInterval(() => {
+    espiao.innerHTML = '<strong>espiando</strong>';
+    for (const [n, orig] of G.espiados) {
+      const row = document.createElement('div');
+      const v = G.vars.has(n) ? texto(G.vars.get(n)) : '(sem valor)';
+      row.textContent = `${orig} = ${v}`;
+      espiao.appendChild(row);
+    }
+  }, 150);
+}
+
+const CSS_BASE = `
+:root{--obj-fundo:#f5f6f8;--obj-texto:#1b1d22;--obj-area:#fff;--obj-borda:#e1e3e8;--obj-destaque:#3b82f6}
+body.obj-escuro{--obj-fundo:#121417;--obj-texto:#e7e9ee;--obj-area:#1b1e23;--obj-borda:#2b2f36;--obj-destaque:#3b82f6}
+body{margin:0;background:var(--obj-fundo);color:var(--obj-texto);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#objetivo-raiz{box-sizing:border-box;min-height:100vh;padding:16px;gap:12px}
+#objetivo-raiz *{box-sizing:border-box}
+#objetivo-raiz h1,#objetivo-raiz h2,#objetivo-raiz p{margin:0 0 .5em}
+#objetivo-raiz [data-tipo="area"]{background:var(--obj-area);border:1px solid var(--obj-borda);border-radius:10px;padding:16px}
+#objetivo-raiz button{font:inherit;padding:8px 18px;border-radius:8px;border:0;background:var(--obj-destaque);color:#fff;cursor:pointer;transition:transform .08s,filter .15s}
+#objetivo-raiz button:hover{filter:brightness(1.1)}
+#objetivo-raiz button:active{transform:scale(.97)}
+#objetivo-raiz input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--obj-borda);background:var(--obj-area);color:var(--obj-texto)}
+#objetivo-raiz img{max-width:100%}
+#objetivo-raiz .obj-imagem{position:relative;border-radius:10px;overflow:hidden;border:2px solid transparent;transition:border-color .15s,background .15s}
+#objetivo-raiz .obj-imagem img{display:block;width:100%;height:100%;object-fit:cover}
+#objetivo-raiz .obj-imagem span{display:none}
+#objetivo-raiz .obj-imagem.vazia{min-height:150px;display:grid;place-items:center;border:2px dashed var(--obj-borda);color:#8a8f99;font-size:14px;padding:16px;text-align:center}
+#objetivo-raiz .obj-imagem.vazia img{display:none}
+#objetivo-raiz .obj-imagem.vazia span{display:block}
+#objetivo-raiz .obj-imagem.sobre{border-color:var(--obj-destaque);background:color-mix(in srgb,var(--obj-destaque) 12%,transparent)}
+.obj-aviso{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1b1d22;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:opacity .4s;z-index:9999}
+.obj-aviso.obj-sai{opacity:0}
+.obj-erro{position:fixed;left:16px;right:16px;bottom:16px;max-width:640px;margin:auto;background:#2a1215;color:#ffd9dc;border:1px solid #ef4444;border-radius:10px;padding:14px 40px 14px 16px;font:14px/1.5 system-ui,sans-serif;z-index:10000}
+.obj-erro p{margin:4px 0}
+.obj-erro code{display:block;margin-top:6px;padding:6px 8px;background:#0006;border-radius:6px;font:13px ui-monospace,monospace;white-space:pre-wrap}
+.obj-erro button{position:absolute;top:6px;right:8px;background:none;border:0;color:inherit;font-size:20px;cursor:pointer}
+.obj-espiao{position:fixed;top:12px;right:12px;background:#000c;color:#9ef0a8;font:13px ui-monospace,monospace;padding:8px 12px;border-radius:8px;z-index:9998}
+.obj-espiao strong{color:#fff;display:block;margin-bottom:4px}
+`;
+
+/* ───────────────────────── início ───────────────────────── */
+
+async function executar(fonte) {
+  G.fonte = fonte.split(/\r?\n/);
+  try {
+    const corpo = new Programa(fonte).analisar();
+    await rodarBloco({ local: null }, corpo);
+    for (const f of G.aoAbrir) await f();
+  } catch (e) { mostrarErro(e); }
+}
+
+function preparar() {
+  const css = document.createElement('style'); css.textContent = CSS_BASE; document.head.appendChild(css);
+  G.estilo = document.createElement('style'); document.head.appendChild(G.estilo);
+  G.raiz = document.createElement('main'); G.raiz.id = 'objetivo-raiz'; document.body.appendChild(G.raiz);
+  // impede o navegador de abrir a imagem se ela for solta fora de uma caixa de imagem
+  document.addEventListener('dragover', ev => ev.preventDefault());
+  document.addEventListener('drop', ev => ev.preventDefault());
+}
+
+/* Usado pela extensão: roda um código .objetivo na página atual. */
+window.Objetivo = { rodar(fonte) { preparar(); return executar(fonte); } };
+
+async function iniciar() {
+  const embutido = document.querySelector('script[type="text/objetivo"]');
+  const tag = document.querySelector('script[data-abrir]');
+  if (!embutido && !tag) return; // nada pra rodar sozinho (ex.: carregado pela extensão)
+  preparar();
+  if (embutido) return executar(embutido.textContent);
+
+  const arquivo = tag.dataset.abrir;
+  let fonte;
+  try {
+    const r = await fetch(arquivo);
+    if (!r.ok) throw new Error(r.status);
+    fonte = await r.text();
+  } catch {
+    return mostrarErro(new ErroObjetivo(null,
+      `Não consegui abrir "${arquivo}". Se você abriu o index.html clicando duas vezes, o navegador bloqueia a leitura de arquivos. ` +
+      `Abra um terminal nesta pasta e rode:  python3 -m http.server   Depois acesse http://localhost:8000`));
+  }
+  executar(fonte);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+else iniciar();
+})();
+</script>
+
+<script>
+(() => {
+  const interpretador = document.getElementById('interpretador').textContent;
+  const codigo = document.getElementById('codigo');
+  const numeros = document.getElementById('numeros');
+  const previa = document.getElementById('previa');
+  const editor = document.getElementById('editor');
+  const nomeArquivo = document.getElementById('nome-arquivo');
+  const estado = document.getElementById('estado');
+  const exemplos = document.getElementById('exemplos');
+  const GUARDA = 'objetivo-site:rascunho';
+
+  function guardar(chave, valor) { try { localStorage.setItem(chave, valor); } catch {} }
+  function ler(chave) { try { return localStorage.getItem(chave); } catch { return null; } }
+
+  function atualizarNumeros() {
+    const n = codigo.value.split('\n').length;
+    let t = '';
+    for (let i = 1; i <= n; i++) t += i + '\n';
+    numeros.textContent = t;
+    numeros.scrollTop = codigo.scrollTop;
+  }
+
+  function rodar() {
+    const fonte = codigo.value;
+    previa.onload = () => {
+      try { previa.contentWindow.Objetivo.rodar(fonte); }
+      catch (e) { estado.textContent = 'não consegui rodar'; console.error(e); }
+    };
+    previa.srcdoc = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script>'
+      + interpretador + '<\/script>';
+    estado.textContent = 'atualiza enquanto você digita';
+  }
+
+  let espera = null;
+  function aoDigitar() {
+    atualizarNumeros();
+    guardar(GUARDA, JSON.stringify({ nome: nomeArquivo.textContent, codigo: codigo.value }));
+    clearTimeout(espera);
+    estado.textContent = 'digitando…';
+    espera = setTimeout(rodar, 700);
+  }
+
+  function abrir(nome, texto) {
+    nomeArquivo.textContent = nome;
+    codigo.value = texto;
+    atualizarNumeros();
+    guardar(GUARDA, JSON.stringify({ nome, codigo: texto }));
+    rodar();
+  }
+
+  function carregarExemplo(id) {
+    const opcao = exemplos.querySelector(`option[value="${id}"]`);
+    const nome = id.replace('ex-', '') + '.objetivo';
+    abrir(nome, document.getElementById(id).textContent);
+    if (opcao) exemplos.value = id;
+  }
+
+  async function abrirArquivo(arq) {
+    if (!arq) return;
+    if (!/\.objetivo$/i.test(arq.name) && !arq.type.startsWith('text/')) {
+      estado.textContent = `"${arq.name}" não é um arquivo .objetivo`;
+      return;
+    }
+    abrir(arq.name, await arq.text());
+  }
+
+  codigo.addEventListener('input', aoDigitar);
+  codigo.addEventListener('scroll', () => { numeros.scrollTop = codigo.scrollTop; });
+  codigo.addEventListener('keydown', ev => {
+    if (ev.key === 'Tab' && !ev.shiftKey) {
+      ev.preventDefault();
+      codigo.setRangeText('    ', codigo.selectionStart, codigo.selectionEnd, 'end');
+      aoDigitar();
+    }
+    if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); clearTimeout(espera); rodar(); }
+  });
+  document.getElementById('rodar').addEventListener('click', () => { clearTimeout(espera); rodar(); });
+  exemplos.addEventListener('change', () => carregarExemplo(exemplos.value));
+  document.getElementById('arquivo').addEventListener('change', ev => abrirArquivo(ev.target.files[0]));
+
+  editor.addEventListener('dragover', ev => { ev.preventDefault(); editor.classList.add('soltando'); });
+  editor.addEventListener('dragleave', () => editor.classList.remove('soltando'));
+  editor.addEventListener('drop', ev => {
+    ev.preventDefault();
+    editor.classList.remove('soltando');
+    abrirArquivo(ev.dataTransfer.files[0]);
+  });
+
+  let salvo = null;
+  try { salvo = JSON.parse(ler(GUARDA)); } catch {}
+  if (salvo && salvo.codigo) abrir(salvo.nome || 'sem-nome.objetivo', salvo.codigo);
+  else carregarExemplo('ex-contador');
+})();
+</script>
