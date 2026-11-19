@@ -157,6 +157,21 @@ tr.final td { background: color-mix(in srgb, var(--amarelo) 22%, var(--papel)); 
 #previa { flex: 1; width: 100%; border: 0; background: #fff; }
 .nota { font-size: 16px; color: var(--lapis); }
 
+/* recursos */
+.recursos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 48px; }
+.recurso { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.recurso h3 { margin: 0; font: 700 20px/1.3 var(--fonte-texto); }
+.recurso p { color: var(--lapis); max-width: 34em; }
+.recurso pre { margin: 4px 0 0; padding: 14px 16px; overflow-x: auto; }
+.recurso .codigo { font-size: 13.5px; }
+
+/* comandos */
+.categorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); border-top: 1px solid var(--regua); border-left: 1px solid var(--regua); }
+.categoria { padding: 18px 20px 20px; border-right: 1px solid var(--regua); border-bottom: 1px solid var(--regua); min-width: 0; }
+.categoria h3 { margin: 0 0 10px; font: 700 13px/1.2 var(--fonte-texto); text-transform: uppercase; letter-spacing: .06em; color: var(--azul); }
+.categoria ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.categoria code { font: 13.5px/1.5 var(--fonte-codigo); color: var(--tinta); overflow-wrap: anywhere; }
+
 /* perguntas */
 .qa { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 48px; }
 .qa div { display: grid; gap: 8px; align-content: start; }
@@ -182,6 +197,7 @@ tr.final td { background: color-mix(in srgb, var(--amarelo) 22%, var(--papel)); 
   .painel { height: 55vh; min-height: 340px; }
   .painel + .painel { border-left: 0; border-top: 1px solid var(--regua); }
   .desenho { grid-template-columns: 1fr; }
+  .recursos { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) { body { font-size: 17px; } .topo nav { display: none; } }
 </style>
@@ -194,6 +210,8 @@ tr.final td { background: color-mix(in srgb, var(--amarelo) 22%, var(--papel)); 
     </a>
     <nav aria-label="Seções">
       <a href="#comparacao">A linguagem</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#comandos">Comandos</a>
       <a href="#aulas">Plano de aulas</a>
       <a href="#editor">Editor</a>
       <a href="#contato">Contato</a>
@@ -297,6 +315,121 @@ fim do arrume</code></pre>
     </div>
   </section>
 
+  <section class="parte cheia" id="recursos">
+    <div class="lado">
+      <h2>O que dá para fazer</h2>
+      <p>Além de botões e textos, a linguagem cobre o que os alunos costumam querer colocar no site. Os exemplos abaixo funcionam do jeito que estão escritos.</p>
+    </div>
+    <div class="recursos">
+      <div class="recurso">
+        <h3>Site com várias páginas</h3>
+        <p>Cada página é um bloco. Os links trocam de página sem recarregar, e o botão voltar do navegador funciona.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie a página fotos
+    crie um título com "Fotos da excursão"
+    crie um link com "Voltar" para a página início
+fim da página
+
+crie um link com "Ver as fotos" para a página fotos</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Tabelas</h3>
+        <p>Uma lista vira o cabeçalho, e cada linha nova é adicionada com um comando.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie uma tabela chamada notas com a lista "Aluno", "Nota"
+adicione a linha "Ana", 9 em notas
+adicione a linha "Bruno", 7 em notas</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Formulários</h3>
+        <p>Caixa de texto, lista de opções, caixa de marcar, controle deslizante, caixa de número e área de texto.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie uma caixa de texto chamada nome com "Seu nome"
+crie uma lista de opções chamada turma com a lista "6º A", "6º B"
+crie uma caixa de marcar chamada aceito com "Quero receber avisos"
+crie um controle deslizante chamado idade de 10 até 17 com 12</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Vídeo, mapa e outros sites</h3>
+        <p>Basta colar o link do YouTube ou escrever o endereço. Nada de código de incorporação.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie um vídeo com "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+crie um mapa com "Praça da Sé, São Paulo"
+crie um site com "https://pt.wikipedia.org"</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Imagens e sons pelo nome</h3>
+        <p>O arquivo fica na pasta imagens/ ou sons/, ou é arrastado para o editor. Também toca notas musicais.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie uma imagem chamada heroi com "heroi1"
+toque o som "pulo"
+toque a nota dó5 por 0,2 segundos</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Jogos com o teclado</h3>
+        <p>Posição x e y, tecla apertada e repetição a cada quadro. O exemplo de plataforma do editor usa só isso.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie uma imagem chamada heroi com "heroi1"
+a cada quadro
+    se a tecla "direita" estiver apertada então
+        aumente o x de heroi em 4
+    fim do se
+fim do a cada</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Memória</h3>
+        <p>O site lembra o que o aluno digitou, mesmo depois de fechar o navegador.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie uma caixa de texto chamada nome com "Seu nome"
+lembre o texto de nome como "ultimo_nome"
+ultimo vale o que foi lembrado como "ultimo_nome"</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Dados da internet</h3>
+        <p>Busca um endereço e lê os campos da resposta com a mesma frase de sempre: o ___ de ___.</p>
+        <pre class="quadriculado"><code class="codigo realce">busque "https://api.exemplo.com/clima.json" e guarde em clima
+escreva "Hoje faz {a temperatura de clima} graus"</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Funções</h3>
+        <p>O aluno ensina um comando novo e usa como qualquer outro.</p>
+        <pre class="quadriculado"><code class="codigo realce">ensine dobro de n
+    responda n * 2
+fim do ensine
+
+escreva dobro de 21</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Projetos em vários arquivos</h3>
+        <p>Um projeto grande se divide em arquivos. Se der erro, a mensagem diz em qual arquivo e em qual linha.</p>
+        <pre class="quadriculado"><code class="codigo realce">use "personagens.objetivo"
+use "fases.objetivo"</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Estilos e temas</h3>
+        <p>Um estilo com nome é aplicado em quantos elementos quiser. Há tema claro e escuro.</p>
+        <pre class="quadriculado"><code class="codigo realce">crie um texto chamado aviso com "Prova na sexta"
+estilo destaque
+    fundo: amarelo
+    cantos: suaves
+fim do estilo
+
+use o estilo destaque em aviso
+use o tema escuro</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Listas, sorteio e datas</h3>
+        <p>Embaralhar, ordenar, sortear, média, maior e menor, e valores dentro do texto com chaves.</p>
+        <pre class="quadriculado"><code class="codigo realce">alunos vale a lista "Ana", "Bruno", "Carla"
+embaralhe alunos
+escreva "Começa: {o primeiro de alunos}"
+escreva "Hoje é {o dia da semana}, {a hora de agora}"</code></pre>
+      </div>
+      <div class="recurso">
+        <h3>Tratando erros</h3>
+        <p>Se algo falhar, como a internet cair, o programa segue por outro caminho.</p>
+        <pre class="quadriculado"><code class="codigo realce">tente
+    busque "https://site-que-nao-existe.xyz" e guarde em dados
+se der errado
+    mostre o aviso "Sem internet agora"
+fim do tente</code></pre>
+      </div>
+    </div>
+  </section>
+
   <section class="parte cheia" id="aulas">
     <div class="lado">
       <h2>Plano de aulas</h2>
@@ -316,6 +449,127 @@ fim do arrume</code></pre>
           <tr class="final"><td>08</td><td>Projeto final</td><td>Cada aluno cria o próprio site: um quiz, um jogo de dado ou uma página sobre um tema que escolher.</td><td>todos</td></tr>
         </tbody>
       </table>
+    </div>
+  </section>
+
+  <section class="parte cheia" id="comandos">
+    <div class="lado">
+      <h2>Comandos</h2>
+      <p>Toda ação começa com um verbo e todo bloco fecha com <code>fim do</code> + o nome do bloco. Acentos são opcionais: <code>pagina</code> e <code>página</code> funcionam igual.</p>
+    </div>
+    <div class="categorias">
+      <div class="categoria">
+        <h3>Página e layout</h3>
+        <ul>
+          <li><code>página "Título"</code></li>
+          <li><code>arrume a página assim … fim do arrume</code></li>
+          <li><code>aparência de X … fim da aparência</code></li>
+          <li><code>estilo nome … fim do estilo</code></li>
+          <li><code>use o estilo nome em X</code></li>
+          <li><code>use o tema claro / escuro</code></li>
+          <li><code>crie a página X … fim da página</code></li>
+          <li><code>vá para a página X</code></li>
+          <li><code>role até X</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Criar elementos</h3>
+        <ul>
+          <li><code>crie um título / subtítulo / texto</code></li>
+          <li><code>crie um botão / link / imagem</code></li>
+          <li><code>crie uma área / lista / item / linha</code></li>
+          <li><code>crie uma tabela / citação / código / separador</code></li>
+          <li><code>crie uma caixa de texto / área de texto</code></li>
+          <li><code>crie uma caixa de marcar / lista de opções</code></li>
+          <li><code>crie um controle deslizante / caixa de número</code></li>
+          <li><code>crie uma barra de progresso</code></li>
+          <li><code>crie um vídeo / mapa / site</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Mudar a tela</h3>
+        <ul>
+          <li><code>mude o texto / a cor / o fundo de X para …</code></li>
+          <li><code>mude o x / o y / a largura / a altura de X para …</code></li>
+          <li><code>mude a imagem / a rotação / a opacidade de X para …</code></li>
+          <li><code>mostre X · esconda X · apague X</code></li>
+          <li><code>limpe X · foque em X</code></li>
+          <li><code>escreva "…"</code></li>
+          <li><code>mostre o aviso "…"</code></li>
+          <li><code>pergunte "…" e guarde em X</code></li>
+          <li><code>confirme "…"</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Valores e listas</h3>
+        <ul>
+          <li><code>x vale 10</code></li>
+          <li><code>aumente / diminua x em 1</code></li>
+          <li><code>"Olá, {nome}!"</code></li>
+          <li><code>a lista 1, 2, 3 · a lista de 1 até 10</code></li>
+          <li><code>adicione … em lista · remova … de lista</code></li>
+          <li><code>ordene · embaralhe · inverta</code></li>
+          <li><code>o tamanho / a soma / a média de lista</code></li>
+          <li><code>o primeiro / o último / o item 2 de lista</code></li>
+          <li><code>um número sorteado de 1 até 6</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Decisões e repetição</h3>
+        <ul>
+          <li><code>se … então · senão se · senão · fim do se</code></li>
+          <li><code>for maior que · for igual a · for vazio</code></li>
+          <li><code>e · ou · não</code></li>
+          <li><code>repita 5 vezes · repita para sempre</code></li>
+          <li><code>para cada n de 1 até 10</code></li>
+          <li><code>para cada item em lista</code></li>
+          <li><code>enquanto … · pare · pule · pare de repetir</code></li>
+          <li><code>espere 2 segundos</code></li>
+          <li><code>a cada 1 segundo · a cada quadro</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Eventos</h3>
+        <ul>
+          <li><code>quando clicar em X</code></li>
+          <li><code>quando clicar duas vezes em X</code></li>
+          <li><code>quando passar o mouse em X</code></li>
+          <li><code>quando digitar em X · quando mudar X</code></li>
+          <li><code>quando apertar / soltar a tecla "…"</code></li>
+          <li><code>quando o mouse mexer</code></li>
+          <li><code>quando a página abrir</code></li>
+          <li><code>quando a página X abrir</code></li>
+          <li><code>a tecla "espaço" estiver apertada</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Sons, imagens e mídia</h3>
+        <ul>
+          <li><code>toque o som "nome" [repetindo]</code></li>
+          <li><code>toque a nota dó5 por 0,5 segundos</code></li>
+          <li><code>pare o som "nome" · pare todos os sons</code></li>
+          <li><code>mude o volume para 50</code></li>
+          <li><code>crie uma imagem com "heroi"</code></li>
+          <li><code>mude o espelhado de X para verdadeiro</code></li>
+          <li><code>crie um vídeo com "link do YouTube"</code></li>
+          <li><code>crie um mapa com "endereço"</code></li>
+          <li><code>abra o endereço "…"</code></li>
+        </ul>
+      </div>
+      <div class="categoria">
+        <h3>Funções, dados e arquivos</h3>
+        <ul>
+          <li><code>ensine nome de a e b … fim do ensine</code></li>
+          <li><code>responda valor</code></li>
+          <li><code>tente … se der errado … fim do tente</code></li>
+          <li><code>lembre X como "nome" · esqueça "nome"</code></li>
+          <li><code>o que foi lembrado como "nome"</code></li>
+          <li><code>busque "https://…" e guarde em X</code></li>
+          <li><code>use "outro.objetivo"</code></li>
+          <li><code>a data de hoje · a hora de agora</code></li>
+          <li><code>espie X (mostra o valor enquanto roda)</code></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -366,12 +620,12 @@ fim do arrume</code></pre>
   <section class="contato" id="contato">
     <h2>Quer usar na sua escola?</h2>
     <p>Diga quantas turmas e quais anos. Combinamos uma demonstração para os professores.</p>
-    <p class="email"><span>contato@seudominio.com.br</span></p>
+    <p class="email"><span>contato@objetivolang.com.br</span></p>
   </section>
 
   <footer class="rodape">
     <span>Objetivo, linguagem de programação em português</span>
-    <span>arquivos <code>.objetivo</code></span>
+    <span>objetivolang.com.br · arquivos <code>.objetivo</code></span>
   </footer>
 </div>
 
@@ -2681,8 +2935,9 @@ else iniciar();
   const interpretador = document.getElementById('interpretador').textContent;
 
   const VERBOS = new Set(('vale crie mude pinte quando se senão então fim repita para cada enquanto aumente diminua escreva mostre ' +
-    'esconda apague página use arrume assim aparência ensine responda adicione remova pare pule espere pergunte tente').split(' '));
-  const TIPOS = new Set('título texto botão área imagem lista caixa'.split(' '));
+    'esconda apague página use arrume assim aparência ensine responda adicione remova pare pule espere pergunte tente ' +
+    'toque estilo troque ordene embaralhe inverta lembre esqueça busque guarde vá role limpe foque abra confirme cada der errado').split(' '));
+  const TIPOS = new Set('título subtítulo texto botão área imagem lista caixa link tabela vídeo mapa site controle barra citação código separador item linha'.split(' '));
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   function realcar(txt) {
     return txt.split('\n').map(linha => {
