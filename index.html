@@ -2,189 +2,378 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: barra de ferramentas fina em cima; editor e prévia lado a lado ocupando a tela; referência de comandos embaixo. */
+/* Layout: folha de material de aula. Coluna de leitura à esquerda, exemplos à direita; papel quadriculado só onde há código. */
 :root {
-  --fundo: #eef0ec;
-  --painel: #ffffff;
-  --tinta: #18201c;
-  --suave: #5d6862;
-  --linha: #d6dbd5;
-  --destaque: #2f49d1;
-  --destaque-tinta: #ffffff;
-  --codigo-fundo: #fbfcfa;
-  --numeros: #a1aaa4;
+  --papel: #fbfaf6;
+  --tinta: #1b1d1a;
+  --lapis: #62665f;
+  --regua: #dcdcd2;
+  --quadro: #eef0f7;
+  --quadricula: rgba(47, 73, 209, .07);
+  --azul: #2f49d1;
+  --amarelo: #ffd23f;
+  --k: #2f49d1;
+  --s: #1d7a3a;
+  --n: #b5471b;
+  --c: #8b8f87;
+  --t: #7a3fb0;
   --fonte-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --fonte-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --fonte-codigo: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fonte-texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --fonte-codigo: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --fundo: #121614; --painel: #1a1f1c; --tinta: #e6ebe7; --suave: #95a199; --linha: #2c3430;
-    --destaque: #7f91ff; --destaque-tinta: #0d1020; --codigo-fundo: #151a17; --numeros: #56615a;
+    --papel: #161816; --tinta: #e9e9e2; --lapis: #9fa39a; --regua: #2f322e; --quadro: #1d2130;
+    --quadricula: rgba(127, 145, 255, .08); --azul: #8d9cff; --k: #8d9cff; --s: #7fd393; --n: #ffab8a; --c: #7c8178; --t: #c99cf2;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --fundo: #121614; --painel: #1a1f1c; --tinta: #e6ebe7; --suave: #95a199; --linha: #2c3430;
-  --destaque: #7f91ff; --destaque-tinta: #0d1020; --codigo-fundo: #151a17; --numeros: #56615a;
+  --papel: #161816; --tinta: #e9e9e2; --lapis: #9fa39a; --regua: #2f322e; --quadro: #1d2130;
+  --quadricula: rgba(127, 145, 255, .08); --azul: #8d9cff; --k: #8d9cff; --s: #7fd393; --n: #ffab8a; --c: #7c8178; --t: #c99cf2;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 body {
-  background: var(--fundo);
-  color: var(--tinta);
-  font: 15px/1.55 var(--fonte-texto);
+  background: var(--papel); color: var(--tinta);
+  font: 18px/1.6 var(--fonte-texto);
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 12px 40px;
+  padding-block: 0 64px;
 }
+.folha { max-width: 1080px; margin-inline: auto; }
+h1, h2 { font-family: var(--fonte-titulo); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(40px, 6.4vw, 72px); line-height: 1; }
+h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.15; }
+p { margin: 0; }
+a { color: var(--azul); text-underline-offset: 3px; }
+code { font-family: var(--fonte-codigo); font-size: .84em; }
+:is(a, button, select, textarea, label):focus-visible { outline: 2px solid var(--azul); outline-offset: 3px; }
 
-.barra {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
-  padding-block: 4px 12px;
-}
-.marca { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
-.marca h1 {
-  font: 800 28px/1 var(--fonte-titulo); letter-spacing: -0.02em; margin: 0;
-}
-.marca h1 span { color: var(--destaque); }
-.marca p { margin: 0; color: var(--suave); font-size: 14px; }
-.acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* cabeçalho */
+.topo { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; padding-block: 22px; border-bottom: 1px solid var(--regua); }
+.marca { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--tinta); font: 800 21px/1 var(--fonte-titulo); letter-spacing: -0.02em; margin-right: auto; }
+.marca svg { width: 28px; height: 28px; flex: none; }
+.topo nav { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 16px; }
+.topo nav a { color: var(--lapis); text-decoration: none; }
+.topo nav a:hover { color: var(--tinta); text-decoration: underline; }
 
-button, .botao, select {
-  font: 500 14px/1 var(--fonte-texto);
-  height: 36px; padding: 0 14px; border-radius: 8px;
-  border: 1px solid var(--linha); background: var(--painel); color: var(--tinta);
-  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-}
-button:hover, .botao:hover, select:hover { border-color: var(--suave); }
-button.principal { background: var(--destaque); color: var(--destaque-tinta); border-color: transparent; font-weight: 600; }
-button.principal:hover { filter: brightness(1.08); }
-:is(button, .botao, select, textarea):focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
-kbd { font: 11px var(--fonte-codigo); opacity: .75; }
+/* abertura */
+.abertura { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; padding-block: 64px 72px; align-items: start; }
+.abertura .texto { display: grid; gap: 22px; padding-top: 8px; }
+.abertura .texto p { color: var(--lapis); font-size: 20px; max-width: 30em; }
+.abertura .links { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: center; font-size: 17px; }
+.botao { display: inline-block; background: var(--tinta); color: var(--papel); text-decoration: none; padding: 12px 22px; border-radius: 4px; font-weight: 700; }
+.botao:hover { background: var(--azul); color: #fff; }
 
-.mesa {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px;
-  height: calc(100vh - 110px); min-height: 480px;
+/* folha quadriculada com código */
+.quadriculado {
+  background-color: var(--quadro);
+  background-image: linear-gradient(var(--quadricula) 1px, transparent 1px), linear-gradient(90deg, var(--quadricula) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border: 1px solid var(--regua);
 }
-.painel {
-  display: flex; flex-direction: column; min-height: 0;
-  background: var(--painel); border: 1px solid var(--linha); border-radius: 12px; overflow: hidden;
-}
-.painel-topo {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  padding: 8px 14px; border-bottom: 1px solid var(--linha);
-  font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave);
-}
-.painel-topo b { font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--tinta); font-size: 13px; }
+.exemplo { display: grid; }
+.exemplo pre { margin: 0; padding: 20px 22px; overflow-x: auto; }
+.exemplo .resultado { border: 1px solid var(--regua); border-top: 0; background: #fff; }
+.exemplo .resultado iframe { display: block; width: 100%; height: 180px; border: 0; }
+.rotulo { font: 600 12px/1 var(--fonte-codigo); color: var(--lapis); padding: 10px 22px; border: 1px solid var(--regua); border-top: 0; background: var(--papel); }
+.codigo { font: 14px/1.7 var(--fonte-codigo); white-space: pre; tab-size: 4; color: var(--tinta); }
+.k { color: var(--k); font-weight: 600; }
+.s { color: var(--s); }
+.n { color: var(--n); }
+.c { color: var(--c); font-style: italic; }
+.t { color: var(--t); }
 
-.editor { position: relative; flex: 1; display: flex; min-height: 0; background: var(--codigo-fundo); }
-.editor pre, .editor textarea {
-  margin: 0; padding: 14px 12px; font: 14px/1.6 var(--fonte-codigo); tab-size: 4;
-}
-#numeros {
-  min-width: 3.2em; text-align: right; color: var(--numeros); user-select: none;
-  overflow: hidden; border-right: 1px solid var(--linha); font-variant-numeric: tabular-nums;
-}
-#codigo {
-  flex: 1; border: 0; resize: none; outline: none; background: transparent; color: var(--tinta);
-  white-space: pre; overflow: auto;
-}
-#codigo:focus-visible { outline: none; }
-.editor.soltando::after {
-  content: "Solte o arquivo .objetivo aqui"; position: absolute; inset: 8px;
-  display: grid; place-items: center; border: 2px dashed var(--destaque); border-radius: 10px;
-  background: color-mix(in srgb, var(--destaque) 10%, transparent); color: var(--destaque); font-weight: 600;
-}
+/* seções */
+.parte { padding-block: 72px; border-top: 1px solid var(--regua); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 48px; }
+.parte > .lado { display: grid; gap: 16px; align-content: start; }
+.parte > .lado p { color: var(--lapis); max-width: 30em; }
+.parte.cheia { grid-template-columns: 1fr; gap: 28px; }
+.parte.cheia > .lado { max-width: 44em; }
 
+/* comparação */
+.duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--regua); }
+.duas > div { min-width: 0; display: flex; flex-direction: column; }
+.duas > div + div { border-left: 1px solid var(--regua); }
+.duas h3 { margin: 0; font: 700 15px/1 var(--fonte-texto); padding: 14px 18px; border-bottom: 1px solid var(--regua); display: flex; justify-content: space-between; gap: 10px; }
+.duas h3 span { font-weight: 400; color: var(--lapis); }
+.duas pre { margin: 0; padding: 18px; overflow-x: auto; flex: 1; }
+.duas .js { background: var(--papel); }
+.duas .js .codigo { color: var(--lapis); font-size: 13px; }
+.duas .obj { background: var(--quadro); }
+
+/* lista de pontos */
+.pontos { display: grid; gap: 40px; }
+.ponto { display: grid; gap: 10px; }
+.ponto h3 { margin: 0; font: 700 21px/1.3 var(--fonte-texto); }
+.ponto p { color: var(--lapis); max-width: 36em; }
+.erro {
+  margin-top: 6px; max-width: 34em; background: #2a1215; color: #ffd9dc; border: 1px solid #ef4444; border-radius: 8px;
+  padding: 12px 40px 12px 16px; font: 15px/1.5 system-ui, sans-serif; position: relative;
+}
+.erro strong { display: block; }
+.erro code { display: block; margin-top: 6px; padding: 6px 8px; background: #0006; border-radius: 6px; font-size: 13px; }
+.erro::after { content: "×"; position: absolute; top: 6px; right: 12px; font-size: 20px; opacity: .8; }
+.desenho { display: grid; grid-template-columns: auto minmax(0, 220px); gap: 20px; align-items: center; margin-top: 6px; }
+.desenho pre { margin: 0; padding: 14px 16px; overflow-x: auto; }
+.mini { display: grid; grid-template-columns: 1fr 2fr; grid-template-rows: 28px 70px 22px; gap: 4px; }
+.mini div { border: 1.5px solid var(--azul); display: grid; place-items: center; font: 12px var(--fonte-codigo); color: var(--azul); }
+.mini .largo { grid-column: 1 / -1; }
+
+/* plano de aulas */
+.tabela-caixa { overflow-x: auto; border: 1px solid var(--regua); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 16px; }
+th, td { text-align: left; vertical-align: top; padding: 14px 18px; border-bottom: 1px solid var(--regua); }
+th { font: 700 13px/1.2 var(--fonte-texto); text-transform: uppercase; letter-spacing: .06em; color: var(--lapis); background: var(--quadro); }
+td:first-child { font: 600 15px/1.6 var(--fonte-codigo); color: var(--azul); width: 4.5em; font-variant-numeric: tabular-nums; }
+td:nth-child(2) { font-weight: 700; width: 13em; }
+td code { color: var(--tinta); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tr.final td { background: color-mix(in srgb, var(--amarelo) 22%, var(--papel)); }
+
+/* editor */
+.editor-barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.editor-barra select, .editor-barra label, .editor-barra button {
+  font: 16px/1 var(--fonte-texto); height: 40px; padding: 0 14px; border-radius: 4px;
+  border: 1px solid var(--regua); background: var(--papel); color: var(--tinta); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+}
+.editor-barra button.principal { background: var(--tinta); color: var(--papel); border-color: var(--tinta); font-weight: 700; }
+.editor-barra button.principal:hover { background: var(--azul); border-color: var(--azul); color: #fff; }
+.editor-barra kbd { font: 11px var(--fonte-codigo); opacity: .7; }
+.mesa { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--regua); height: 600px; }
+.painel { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.painel + .painel { border-left: 1px solid var(--regua); }
+.painel-topo { display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; font: 13px/1.2 var(--fonte-codigo); color: var(--lapis); border-bottom: 1px solid var(--regua); background: var(--papel); }
+.painel-topo b { color: var(--tinta); font-weight: 600; }
+.editor { position: relative; flex: 1; display: flex; min-height: 0; }
+.editor pre, .editor textarea { margin: 0; padding: 14px 12px; font: 14px/1.7 var(--fonte-codigo); tab-size: 4; }
+#numeros { min-width: 3.2em; text-align: right; color: var(--c); user-select: none; overflow: hidden; border-right: 1px solid var(--regua); font-variant-numeric: tabular-nums; }
+#codigo { flex: 1; border: 0; resize: none; outline: none; background: transparent; color: var(--tinta); white-space: pre; overflow: auto; }
+.editor.soltando::after { content: "Solte o arquivo .objetivo aqui"; position: absolute; inset: 8px; display: grid; place-items: center; border: 2px dashed var(--azul); background: color-mix(in srgb, var(--azul) 8%, var(--papel)); color: var(--azul); font-weight: 700; }
 #previa { flex: 1; width: 100%; border: 0; background: #fff; }
+.nota { font-size: 16px; color: var(--lapis); }
 
-.dica { color: var(--suave); font-size: 13px; padding: 10px 2px 0; }
+/* perguntas */
+.qa { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 48px; }
+.qa div { display: grid; gap: 8px; align-content: start; }
+.qa h3 { margin: 0; font: 700 19px/1.35 var(--fonte-texto); }
+.qa p { color: var(--lapis); }
 
-.referencia { margin-top: 36px; }
-.referencia h2 { font: 800 22px/1.2 var(--fonte-titulo); margin: 0 0 4px; text-wrap: balance; }
-.referencia > p { margin: 0 0 18px; color: var(--suave); max-width: 65ch; }
-.grupos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-.grupo { background: var(--painel); border: 1px solid var(--linha); border-radius: 12px; padding: 14px 16px; }
-.grupo h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); }
-.grupo code {
-  display: block; font: 13px/1.5 var(--fonte-codigo); padding: 3px 0; color: var(--tinta);
-  white-space: pre-wrap; overflow-wrap: anywhere;
-}
-.grupo code + code { border-top: 1px dashed var(--linha); }
+/* contato */
+.contato { padding-block: 72px 40px; border-top: 1px solid var(--regua); display: grid; gap: 14px; }
+.contato p { color: var(--lapis); max-width: 36em; }
+.contato .email { font: 800 clamp(24px, 4vw, 40px)/1.15 var(--fonte-titulo); letter-spacing: -0.02em; color: var(--tinta); overflow-wrap: anywhere; }
+.contato .email span { box-shadow: inset 0 -0.32em 0 var(--amarelo); }
+.rodape { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--regua); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 15px; color: var(--lapis); }
 
-@media (max-width: 820px) {
+.arquivo-chip { font: 13px var(--fonte-codigo); border: 1px solid var(--regua); background: var(--papel); color: var(--tinta); border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+.arquivo-chip:hover { border-color: var(--azul); }
+
+@media (max-width: 880px) {
+  .abertura, .parte, .qa { grid-template-columns: 1fr; gap: 32px; }
+  .abertura { padding-block: 40px 56px; }
+  .duas { grid-template-columns: 1fr; }
+  .duas > div + div { border-left: 0; border-top: 1px solid var(--regua); }
   .mesa { grid-template-columns: 1fr; height: auto; }
-  .painel { height: 60vh; min-height: 360px; }
+  .painel { height: 55vh; min-height: 340px; }
+  .painel + .painel { border-left: 0; border-top: 1px solid var(--regua); }
+  .desenho { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 520px) { body { font-size: 17px; } .topo nav { display: none; } }
 </style>
 
-<header class="barra">
-  <div class="marca">
-    <h1>Objetivo<span>.</span></h1>
-    <p>Programação em português para criar sites.</p>
-  </div>
-  <div class="acoes">
-    <select id="exemplos" aria-label="Exemplos">
-      <option value="ex-contador">Exemplo: contador</option>
-      <option value="ex-tarefas">Exemplo: lista de tarefas</option>
-      <option value="ex-dado">Exemplo: dado</option>
-    </select>
-    <label class="botao" for="arquivo">Abrir arquivo</label>
-    <input id="arquivo" type="file" accept=".objetivo,text/plain" hidden>
-    <button id="rodar" class="principal" type="button">Rodar <kbd>Ctrl+Enter</kbd></button>
-  </div>
-</header>
+<div class="folha">
+  <header class="topo">
+    <a class="marca" href="#">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#2f49d1"/><path d="M39 27H27v46h12M61 27h12v46H61" fill="none" stroke="#fff" stroke-width="9" stroke-linejoin="round"/><circle cx="50" cy="50" r="8.5" fill="#ffd23f"/></svg>
+      objetivo
+    </a>
+    <nav aria-label="Seções">
+      <a href="#comparacao">A linguagem</a>
+      <a href="#aulas">Plano de aulas</a>
+      <a href="#editor">Editor</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </header>
 
-<main class="mesa">
-  <section class="painel" aria-label="Código">
-    <div class="painel-topo">Código <b id="nome-arquivo">contador.objetivo</b></div>
-    <div class="editor" id="editor">
-      <pre id="numeros" aria-hidden="true">1</pre>
-      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código Objetivo"></textarea>
+  <section class="abertura">
+    <div class="texto">
+      <h1>Programação em português para a escola.</h1>
+      <p>Objetivo é uma linguagem de programação feita para alunos de 10 a 17 anos. Os comandos são escritos em português, os erros são explicados em português e cada programa vira um site que funciona no navegador.</p>
+      <div class="links">
+        <a class="botao" href="#editor">Abrir o editor</a>
+        <a href="#contato">Falar sobre a minha escola</a>
+      </div>
+    </div>
+    <div class="exemplo">
+      <pre class="quadriculado"><code class="codigo realce" id="demo-codigo">página "Minha primeira página"
+
+crie um título chamado topo com "Olá, turma!"
+crie um botão chamado somar com "Clique aqui"
+crie um texto chamado placar com "0 cliques"
+
+cliques vale 0
+
+quando clicar em somar
+    aumente cliques em 1
+    mude o texto de placar para cliques junto com " cliques"
+fim do quando</code></pre>
+      <div class="rotulo">resultado (pode clicar)</div>
+      <div class="resultado"><iframe id="demo-previa" title="Resultado do exemplo"></iframe></div>
     </div>
   </section>
-  <section class="painel" aria-label="Resultado">
-    <div class="painel-topo">Resultado <b id="estado">atualiza enquanto você digita</b></div>
-    <iframe id="previa" title="Resultado do código"></iframe>
-  </section>
-</main>
-<p class="dica">Arraste um arquivo <code>.objetivo</code> para o editor para abrir. Erros aparecem no resultado, com o número da linha.</p>
 
-<section class="referencia">
-  <h2>Comandos</h2>
-  <p>Toda ação começa com um verbo. Guardar é sempre <code>vale</code>, ler é sempre <code>o ___ de ___</code>, e todo bloco fecha com <code>fim do</code> e a palavra que o abriu.</p>
-  <div class="grupos">
-    <div class="grupo"><h3>Guardar</h3>
-      <code>pontos vale 0</code><code>nome vale "Ana"</code><code>frutas vale a lista "maçã", "uva"</code><code>aumente pontos em 1</code><code>"Olá, " junto com nome</code></div>
-    <div class="grupo"><h3>Decidir</h3>
-      <code>se idade for maior que 17 então</code><code>senão se idade for igual a 17 então</code><code>senão</code><code>fim do se</code><code>for menor que · for diferente de · for vazio · for par</code></div>
-    <div class="grupo"><h3>Repetir</h3>
-      <code>repita 5 vezes … fim do repita</code><code>para cada n de 1 até 10 … fim do para</code><code>para cada fruta em frutas … fim do para</code><code>enquanto vidas for maior que 0 … fim do enquanto</code></div>
-    <div class="grupo"><h3>Criar na página</h3>
-      <code>crie um título chamado topo com "Oi"</code><code>crie um botão chamado ok com "OK" dentro de menu</code><code>crie uma caixa de texto chamada campo</code><code>crie uma imagem chamada foto</code></div>
-    <div class="grupo"><h3>Mudar a página</h3>
-      <code>mude o texto de topo para "Olá"</code><code>mude a cor de topo para azul claro</code><code>mude o fundo de menu para preto</code><code>esconda ok · mostre ok · apague ok</code><code>mostre o aviso "Pronto!"</code></div>
-    <div class="grupo"><h3>Acontecimentos</h3>
-      <code>quando clicar em ok … fim do quando</code><code>quando digitar em campo</code><code>quando apertar a tecla "espaço"</code><code>a cada 1 segundo … fim do a cada</code></div>
-    <div class="grupo"><h3>Layout e aparência</h3>
-      <code>arrume a página assim
+  <section class="parte" id="comparacao">
+    <div class="lado">
+      <h2>O mesmo botão em duas linguagens</h2>
+      <p>Um contador de cliques que fica amarelo no décimo clique. Em JavaScript, antes de chegar à lógica, o aluno precisa entender seletores, funções de seta e três sinais de igual seguidos.</p>
+      <p>Em Objetivo, a lógica é a mesma (variável, evento e condição) e dá para ler em voz alta.</p>
+    </div>
+    <div class="duas">
+      <div class="js">
+        <h3>JavaScript <span>10 linhas</span></h3>
+        <pre><code class="codigo">let cliques = 0;
+const botao = document.querySelector("#somar");
+const placar = document.querySelector("#placar");
+
+botao.addEventListener("click", () =&gt; {
+  cliques++;
+  placar.textContent = cliques + " cliques";
+  if (cliques === 10) {
+    placar.style.color = "gold";
+  }
+});</code></pre>
+      </div>
+      <div class="obj">
+        <h3>Objetivo <span>8 linhas</span></h3>
+        <pre><code class="codigo realce">cliques vale 0
+
+quando clicar em somar
+    aumente cliques em 1
+    mude o texto de placar para cliques junto com " cliques"
+    se cliques for igual a 10 então
+        mude a cor de placar para amarelo
+    fim do se
+fim do quando</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="parte" id="sala">
+    <div class="lado">
+      <h2>Na sala de aula</h2>
+      <p>Os conceitos são os de Python e JavaScript. Quem aprende com Objetivo chega nessas linguagens sabendo pensar como programador.</p>
+    </div>
+    <div class="pontos">
+      <div class="ponto">
+        <h3>A mensagem de erro diz o que fazer</h3>
+        <p>Quando o aluno erra, o editor mostra a linha, o trecho e uma sugestão. É assim que aparece na tela:</p>
+        <div class="erro" role="img" aria-label="Exemplo de mensagem de erro do Objetivo">
+          <strong>Erro na linha 7</strong>
+          Não conheço o comando "mostra". Você quis dizer "mostre"?
+          <code>mostra o aviso "Pronto!"</code>
+        </div>
+      </div>
+      <div class="ponto">
+        <h3>A página é desenhada com colchetes</h3>
+        <p>O aluno organiza o site desenhando as áreas. A largura no desenho vira a largura na tela.</p>
+        <div class="desenho">
+          <pre class="quadriculado"><code class="codigo realce">arrume a página assim
     [ topo              ]
     [ menu ] [ conteúdo ]
-fim do arrume</code><code>aparência de botão
-    fundo: verde
-    cantos: redondos
-fim da aparência</code></div>
-    <div class="grupo"><h3>Ensinar comandos novos</h3>
-      <code>ensine média de a e b
-    responda (a + b) / 2
-fim do ensine</code><code>escreva média de 7 e 9</code></div>
-  </div>
-</section>
+    [ rodapé            ]
+fim do arrume</code></pre>
+          <div class="mini" aria-hidden="true"><div class="largo">topo</div><div>menu</div><div>conteúdo</div><div class="largo">rodapé</div></div>
+        </div>
+      </div>
+      <div class="ponto">
+        <h3>Abre no navegador do laboratório</h3>
+        <p>Não há programa para instalar. Funciona no Chrome, Firefox e Edge, inclusive em Chromebooks, e o aluno pode continuar em casa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="parte cheia" id="aulas">
+    <div class="lado">
+      <h2>Plano de aulas</h2>
+      <p>Oito encontros, cada um com um conceito novo e algo funcionando na tela no final.</p>
+    </div>
+    <div class="tabela-caixa">
+      <table>
+        <thead><tr><th>Aula</th><th>Tema</th><th>O aluno aprende</th><th>Comandos</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td>Primeira página</td><td>Escrever na tela, dar nome à página e escolher o tema.</td><td><code>escreva</code> <code>página</code></td></tr>
+          <tr><td>02</td><td>Guardando valores</td><td>Variáveis, contas e juntar textos.</td><td><code>vale</code> <code>aumente</code></td></tr>
+          <tr><td>03</td><td>Elementos</td><td>Criar títulos, botões e imagens e mudar texto e cor.</td><td><code>crie</code> <code>mude</code></td></tr>
+          <tr><td>04</td><td>Cliques</td><td>Fazer a página reagir a quem usa.</td><td><code>quando clicar em</code></td></tr>
+          <tr><td>05</td><td>Decisões</td><td>Condições e comparações.</td><td><code>se</code> <code>senão</code></td></tr>
+          <tr><td>06</td><td>Repetição e listas</td><td>Repetir, contar e guardar vários itens.</td><td><code>repita</code> <code>para cada</code></td></tr>
+          <tr><td>07</td><td>Layout e aparência</td><td>Organizar a página e dar estilo.</td><td><code>arrume</code> <code>aparência</code></td></tr>
+          <tr class="final"><td>08</td><td>Projeto final</td><td>Cada aluno cria o próprio site: um quiz, um jogo de dado ou uma página sobre um tema que escolher.</td><td>todos</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="parte cheia" id="editor">
+    <div class="lado">
+      <h2>Editor</h2>
+      <p>O resultado atualiza enquanto você digita. Dá para abrir um arquivo <code>.objetivo</code> pelo botão ou arrastando para dentro do editor. Imagens e sons arrastados para o editor passam a ser usados pelo nome, como <code>"heroi"</code>.</p>
+    </div>
+    <div class="editor-barra">
+      <select id="exemplos" aria-label="Exemplos">
+        <option value="ex-contador">Exemplo: contador</option>
+        <option value="ex-tarefas">Exemplo: lista de tarefas</option>
+        <option value="ex-dado">Exemplo: dado</option>
+        <option value="ex-plataforma">Exemplo: jogo de plataforma</option>
+        <option value="ex-recursos">Exemplo: site com várias páginas</option>
+      </select>
+      <label for="arquivo">Abrir arquivo</label>
+      <input id="arquivo" type="file" accept=".objetivo,text/plain,image/*,audio/*" multiple hidden>
+      <button id="rodar" class="principal" type="button">Rodar <kbd>Ctrl+Enter</kbd></button>
+    </div>
+    <div class="mesa">
+      <section class="painel quadriculado" aria-label="Código">
+        <div class="painel-topo"><b id="nome-arquivo">contador.objetivo</b><span>código</span></div>
+        <div class="editor" id="editor-area">
+          <pre id="numeros" aria-hidden="true">1</pre>
+          <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código Objetivo"></textarea>
+        </div>
+      </section>
+      <section class="painel" aria-label="Resultado">
+        <div class="painel-topo"><b>resultado</b><span id="estado">atualiza enquanto você digita</span></div>
+        <iframe id="previa" title="Resultado do código"></iframe>
+      </section>
+    </div>
+    <p class="nota" id="lista-arquivos"></p>
+  </section>
+
+  <section class="parte cheia" id="perguntas">
+    <div class="lado"><h2>Perguntas de professores</h2></div>
+    <div class="qa">
+      <div><h3>Precisa instalar alguma coisa?</h3><p>Não. Basta abrir o site no navegador. Funciona nos computadores do laboratório, em Chromebooks e em casa.</p></div>
+      <div><h3>Isso é programação de verdade?</h3><p>Sim. Variáveis, condições, repetições, listas, funções e eventos são os mesmos conceitos de Python e JavaScript. O que muda é que os comandos estão em português.</p></div>
+      <div><h3>Para qual idade?</h3><p>Dos 10 anos ao ensino médio. É simples para quem nunca programou, e o resultado é um site de verdade, então os mais velhos não acham infantil.</p></div>
+      <div><h3>O professor precisa saber programar?</h3><p>Não precisa ser especialista. O plano de aulas segue uma ordem, e as mensagens de erro explicam boa parte dos problemas direto para o aluno.</p></div>
+      <div><h3>Quanto custa?</h3><p>Os planos para escolas ainda estão sendo definidos com as primeiras escolas. Escreva para conversar.</p></div>
+    </div>
+  </section>
+
+  <section class="contato" id="contato">
+    <h2>Quer usar na sua escola?</h2>
+    <p>Diga quantas turmas e quais anos. Combinamos uma demonstração para os professores.</p>
+    <p class="email"><span>contato@seudominio.com.br</span></p>
+  </section>
+
+  <footer class="rodape">
+    <span>Objetivo, linguagem de programação em português</span>
+    <span>arquivos <code>.objetivo</code></span>
+  </footer>
+</div>
 
 <script type="text/plain" id="ex-contador">-- contador.objetivo
 
@@ -285,6 +474,259 @@ quando clicar em jogar
 fim do quando
 </script>
 
+<script type="text/plain" id="ex-plataforma">-- plataforma.objetivo
+-- Jogo de plataforma feito só com comandos comuns da linguagem.
+-- Gravidade, pulo, colisão e animação são contas e decisões escritas aqui mesmo.
+-- Setas andam, espaço pula. Clique no jogo antes de jogar.
+-- Os desenhos estão na pasta imagens/: heroi1, heroi2 e estrela.
+
+página "Plataforma"
+use o tema escuro
+
+crie um texto chamado placar com "Pegue a estrela!"
+crie uma área chamada tela
+
+aparência de tela
+    largura: 640
+    altura: 360
+    fundo: azul escuro
+    espaço dentro: nenhum
+fim da aparência
+
+-- coloca uma peça na tela: posição, tamanho e cor
+ensine monte de peça e px e py e l e alt e cor
+    mude o x de peça para px
+    mude o y de peça para py
+    mude a largura de peça para l
+    mude a altura de peça para alt
+    mude o fundo de peça para cor
+fim do ensine
+
+-- responde se duas peças estão uma por cima da outra
+ensine encostam de p e q
+    se o x de p + a largura de p for menor que o x de q então
+        responda falso
+    fim do se
+    se o x de p for maior que o x de q + a largura de q então
+        responda falso
+    fim do se
+    se o y de p + a altura de p for menor que o y de q então
+        responda falso
+    fim do se
+    se o y de p for maior que o y de q + a altura de q então
+        responda falso
+    fim do se
+    responda verdadeiro
+fim do ensine
+
+crie uma área chamada chão dentro de tela
+crie uma área chamada p1 dentro de tela
+crie uma área chamada p2 dentro de tela
+crie uma área chamada p3 dentro de tela
+crie uma imagem chamada estrela com "estrela" dentro de tela
+crie uma imagem chamada jogador com "heroi1" dentro de tela
+
+monte de chão e 0 e 330 e 640 e 30 e "verde escuro"
+monte de p1 e 90 e 260 e 120 e 16 e "verde"
+monte de p2 e 270 e 200 e 120 e 16 e "verde"
+monte de p3 e 450 e 140 e 120 e 16 e "verde"
+monte de estrela e 495 e 100 e 24 e 24 e "transparente"
+monte de jogador e 20 e 290 e 30 e 40 e "transparente"
+
+plataformas vale a lista chão, p1, p2, p3
+
+vy vale 0
+no_chao vale falso
+pontos vale 0
+passos vale 0
+
+a cada quadro
+    -- andar para os lados, virando o desenho para onde anda
+    andando vale falso
+    se a tecla "esquerda" estiver apertada então
+        diminua o x de jogador em 4
+        mude o espelhado de jogador para verdadeiro
+        andando vale verdadeiro
+    fim do se
+    se a tecla "direita" estiver apertada então
+        aumente o x de jogador em 4
+        mude o espelhado de jogador para falso
+        andando vale verdadeiro
+    fim do se
+
+    -- animação: troca entre os dois desenhos a cada 8 quadros enquanto anda
+    se andando e no_chao então
+        aumente passos em 1
+    senão
+        passos vale 0
+    fim do se
+    se o resto de passos por 16 for menor que 8 então
+        mude a imagem de jogador para "heroi1"
+    senão
+        mude a imagem de jogador para "heroi2"
+    fim do se
+
+    -- não sair da tela
+    se o x de jogador for menor que 0 então
+        mude o x de jogador para 0
+    fim do se
+    se o x de jogador for maior que 640 - a largura de jogador então
+        mude o x de jogador para 640 - a largura de jogador
+    fim do se
+
+    -- pular (só quando está pisando em algo)
+    se a tecla "espaço" estiver apertada e no_chao então
+        vy vale -12
+        toque a nota dó5 por 0,08 segundos
+    fim do se
+
+    -- gravidade: a velocidade para baixo aumenta um pouco a cada quadro
+    aumente vy em 0,6
+    aumente o y de jogador em vy
+
+    -- pousar: só conta se estava caindo e os pés estavam acima da plataforma
+    no_chao vale falso
+    para cada bloco em plataformas
+        se encostam de jogador e bloco e vy for maior que 0 então
+            pes_antes vale o y de jogador + a altura de jogador - vy
+            se pes_antes for menor ou igual a o y de bloco + 1 então
+                mude o y de jogador para o y de bloco - a altura de jogador
+                vy vale 0
+                no_chao vale verdadeiro
+            fim do se
+        fim do se
+    fim do para
+
+    -- pegar a estrela: toca duas notas e ela pula para outro lugar
+    se encostam de jogador e estrela então
+        aumente pontos em 1
+        mude o texto de placar para "Estrelas: " junto com pontos
+        toque a nota mi6 por 0,08 segundos
+        toque a nota si6 por 0,15 segundos
+        mude o x de estrela para um número sorteado de 20 até 600
+        mude o y de estrela para um número sorteado de 60 até 280
+    fim do se
+fim do a cada
+</script>
+
+<script type="application/json" id="arquivos-embutidos">{"heroi1.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyOCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cmVjdCB4PSI0IiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iNSIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjYiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI3IiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iMyIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjQiIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI1IiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iNiIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjciIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI4IiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iMyIgeT0iMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjQiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNiIgeT0iMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjQiIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iNiIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iMyIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNCIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI2IiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNyIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMSIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMTAiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSIxIiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iMiIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjMiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI0IiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNSIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjYiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI3IiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjkiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIxMCIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iOSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iOSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMyIgeT0iMTAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI0IiB5PSIxMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjUiIHk9IjEwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iNiIgeT0iMTAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI3IiB5PSIxMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjgiIHk9IjEwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iMyIgeT0iMTEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI0IiB5PSIxMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjciIHk9IjExIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iOCIgeT0iMTEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIzIiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjQiIHk9IjEyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI4IiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjMiIHk9IjEzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iNCIgeT0iMTMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI3IiB5PSIxMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjgiIHk9IjEzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iMiIgeT0iMTQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMxYjFkMWEiLz48cmVjdCB4PSIzIiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjxyZWN0IHg9IjQiIHk9IjE0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iNyIgeT0iMTQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMxYjFkMWEiLz48cmVjdCB4PSI4IiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjxyZWN0IHg9IjkiIHk9IjE0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PC9zdmc+", "heroi2.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxNiIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjEyOCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj48cmVjdCB4PSI0IiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iNSIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjYiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI3IiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iMyIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjQiIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI1IiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iNiIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjciIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjNlMWYiLz48cmVjdCB4PSI4IiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmIzZTFmIi8+PHJlY3QgeD0iMyIgeT0iMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiM2UxZiIvPjxyZWN0IHg9IjQiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNiIgeT0iMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjQiIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iNiIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iMyIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI1IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjciIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI4IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNCIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSI2IiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iNyIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMSIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMTAiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMmMyOWIiLz48cmVjdCB4PSIxIiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZjJjMjliIi8+PHJlY3QgeD0iMiIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjMiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI0IiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNSIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjYiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI3IiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjkiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIxMCIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2YyYzI5YiIvPjxyZWN0IHg9IjIiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSIzIiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNCIgeT0iOSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjUiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI2IiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iNyIgeT0iOSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzJmNDlkMSIvPjxyZWN0IHg9IjgiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMyZjQ5ZDEiLz48cmVjdCB4PSI5IiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMmY0OWQxIi8+PHJlY3QgeD0iMyIgeT0iMTAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI0IiB5PSIxMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjUiIHk9IjEwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iNiIgeT0iMTAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSI3IiB5PSIxMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjgiIHk9IjEwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iMiIgeT0iMTEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIzIiB5PSIxMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjgiIHk9IjExIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iOSIgeT0iMTEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIxIiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjIiIHk9IjEyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iOSIgeT0iMTIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIxIiB5PSIxMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzNhM2E0NiIvPjxyZWN0IHg9IjIiIHk9IjEzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjM2EzYTQ2Ii8+PHJlY3QgeD0iOSIgeT0iMTMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIxMCIgeT0iMTMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzYTNhNDYiLz48cmVjdCB4PSIwIiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjxyZWN0IHg9IjEiIHk9IjE0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjMWIxZDFhIi8+PHJlY3QgeD0iMiIgeT0iMTQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMxYjFkMWEiLz48cmVjdCB4PSI5IiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjxyZWN0IHg9IjEwIiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjxyZWN0IHg9IjExIiB5PSIxNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzFiMWQxYSIvPjwvc3ZnPg==", "estrela.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMCAxMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBzaGFwZS1yZW5kZXJpbmc9ImNyaXNwRWRnZXMiPjxyZWN0IHg9IjQiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI1IiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMyIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjQiIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI1IiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNiIgeT0iMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjMiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI0IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNSIgeT0iMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjYiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSIwIiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMSIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjIiIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSIzIiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iNCIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjUiIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI2IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iNyIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjgiIHk9IjMiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI5IiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMCIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjEiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSIyIiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iMyIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI1IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjciIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI4IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iOSIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjEiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSIyIiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iMyIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjQiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI1IiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNiIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjciIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI4IiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMiIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjMiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI0IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNSIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjYiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSI3IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMSIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjIiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQyM2YiLz48cmVjdCB4PSIzIiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNCIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjUiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI2IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkMjNmIi8+PHJlY3QgeD0iNyIgeT0iNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjgiIHk9IjciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSIxIiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMiIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjMiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI2IiB5PSI4IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iNyIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDIzZiIvPjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSIxIiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PHJlY3QgeD0iMiIgeT0iOSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iI2M5OGEwMCIvPjxyZWN0IHg9IjciIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjOThhMDAiLz48cmVjdCB4PSI4IiB5PSI5IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjYzk4YTAwIi8+PC9zdmc+"}</script>
+
+<script type="text/plain" id="ex-recursos">-- recursos.objetivo
+-- Um site com várias páginas que mostra os comandos novos da linguagem.
+
+página "Minha turma"
+use o tema claro
+
+estilo destaque
+    fundo: amarelo
+    cor: preto
+    cantos: suaves
+    espaço dentro: pequeno
+fim do estilo
+
+aparência de link
+    tamanho: grande
+fim da aparência
+
+-- menu que aparece em cima, na página inicial
+crie uma área chamada menu
+crie um link com "Notas" para a página notas dentro de menu
+crie um link com "Sorteio" para a página sorteio dentro de menu
+crie um link com "Cadastro" para a página cadastro dentro de menu
+crie um link com "Mapa da escola" para a página lugar dentro de menu
+
+nome_turma vale "7º ano B"
+crie um título chamado boas_vindas com "Bem-vindos ao site do {nome_turma}!"
+crie um texto chamado dia_atual com "Hoje é {o dia da semana}, {a data de hoje}."
+use o estilo destaque em dia_atual
+
+-- ─────────── página de notas ───────────
+crie a página notas
+    crie um título com "Notas da turma"
+    crie uma tabela chamada quadro com a lista "Aluno", "Nota", "Situação"
+    crie um texto chamado resumo
+    crie um link com "Voltar" para a página início
+fim da página
+
+alunos vale a lista "Ana", "Bruno", "Carla", "Davi"
+notas vale a lista 9, 6,5, 7, 4
+
+para cada n de 1 até o tamanho de alunos
+    nota vale o item n de notas
+    se nota for maior ou igual a 6 então
+        situacao vale "aprovado"
+    senão
+        situacao vale "recuperação"
+    fim do se
+    adicione a linha o item n de alunos, nota, situacao em quadro
+fim do para
+
+mude o texto de resumo para "Média: {a média de notas} · Maior nota: {o maior de notas}"
+
+-- ─────────── página de sorteio ───────────
+crie a página sorteio
+    crie um título com "Quem apresenta hoje?"
+    crie um botão chamado sortear com "Sortear"
+    crie um texto chamado sorteado
+    crie um texto chamado ordem
+    crie um link com "Voltar" para a página início
+fim da página
+
+quando clicar em sortear
+    fila vale a lista "Ana", "Bruno", "Carla", "Davi"
+    embaralhe fila
+    mude o texto de sorteado para "Primeiro: {o primeiro de fila}"
+    mude o texto de ordem para "Ordem completa: {fila}"
+    toque a nota sol5 por 0,1 segundos
+fim do quando
+
+-- ─────────── página de cadastro ───────────
+crie a página cadastro
+    crie um título com "Cadastro do clube de leitura"
+    crie uma caixa de texto chamada campo_nome com "Seu nome"
+    crie uma lista de opções chamada genero com a lista "Aventura", "Mistério", "Ficção científica"
+    crie uma caixa de marcar chamada aceito com "Quero receber avisos"
+    crie um controle deslizante chamado livros de 0 até 20 com 5
+    crie um texto chamado contagem com "Livros por ano: 5"
+    crie um botão chamado enviar com "Enviar"
+    crie um texto chamado resposta
+    crie um link com "Voltar" para a página início
+fim da página
+
+quando mudar livros
+    mude o texto de contagem para "Livros por ano: {o valor de livros}"
+fim do quando
+
+quando clicar em enviar
+    se o texto de campo_nome for vazio então
+        mostre o aviso "Escreva seu nome"
+    senão
+        nome vale as maiúsculas de o texto de campo_nome
+        mude o texto de resposta para "Obrigado, {nome}! Gênero: {o texto de genero}."
+        se aceito estiver marcada então
+            mude o texto de resposta para "{o texto de resposta} Você vai receber avisos."
+        fim do se
+        lembre o texto de campo_nome como "ultimo_nome"
+    fim do se
+fim do quando
+
+quando a página cadastro abrir
+    ultimo vale o que foi lembrado como "ultimo_nome"
+    se ultimo for diferente de "" então
+        mude o texto de campo_nome para ultimo
+    fim do se
+fim do quando
+
+-- ─────────── página com mapa e vídeo ───────────
+crie a página lugar
+    crie um título com "Onde fica a escola"
+    crie um mapa chamado mapa_escola com "Praça da Sé, São Paulo"
+    crie um subtítulo com "Vídeo de boas-vindas"
+    crie um vídeo chamado apresentacao com "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+    crie um link com "Voltar" para a página início
+fim da página
+</script>
+
 <script type="text/plain" id="interpretador">/*
  * Objetivo — interpretador v0.1
  * Lê arquivos .objetivo e executa direto no navegador, linha por linha.
@@ -324,13 +766,18 @@ const talvez = (palavra, opcoes) => { const s = sugestao(palavra, opcoes); retur
 
 const COMANDOS = ['página', 'use', 'arrume', 'aparência', 'crie', 'escreva', 'mostre', 'esconda', 'apague',
   'mude', 'pinte', 'aumente', 'diminua', 'adicione', 'remova', 'pergunte', 'se', 'repita', 'para', 'enquanto',
-  'quando', 'a cada', 'ensine', 'responda', 'pare', 'pule', 'espere', 'espie', 'tente'];
+  'quando', 'a cada', 'ensine', 'responda', 'pare', 'pule', 'espere', 'espie', 'tente', 'toque', 'estilo', 'troque',
+  'ordene', 'embaralhe', 'inverta', 'lembre', 'esqueça', 'busque', 'vá', 'role', 'limpe', 'foque', 'abra', 'confirme'];
 
 /* ───────────────────────── estado global ───────────────────────── */
 
 const G = {
   vars: new Map(), originais: new Map(), els: new Map(),
   aoAbrir: [], espiados: new Map(), raiz: null, estilo: null, fonte: [], profundidade: 0, voltas: 0,
+  teclas: new Set(), usaTeclas: false,
+  arquivos: new Map(), resolvidos: new Map(), tocando: new Map(), volume: 1, audio: null,
+  paginas: new Map(), visivel: null, construindo: null, aoAbrirPagina: new Map(), estilos: new Set(),
+  mouse: { x: 0, y: 0 }, fontes: new Map(),
 };
 
 /* ───────────────────────── valores ───────────────────────── */
@@ -344,7 +791,11 @@ function texto(v) {
   if (typeof v === 'boolean') return v ? 'verdadeiro' : 'falso';
   if (Array.isArray(v)) return v.map(texto).join(', ');
   if (v instanceof Ficha) return '{ ' + [...v].map(([k, x]) => `${G.originais.get(k) || k}: ${texto(x)}`).join(', ') + ' }';
-  if (ehElemento(v)) return v.tagName === 'INPUT' ? v.value : v.textContent;
+  if (ehElemento(v)) {
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(v.tagName)) return v.value;
+    if (v.dataset && v.dataset.tipo === 'caixa-de-marcar') return v.querySelector('span').textContent;
+    return v.textContent;
+  }
   return String(v);
 }
 const pareceNumero = s => typeof s === 'string' && /^\s*-?\d+([.,]\d+)?\s*$/.test(s);
@@ -484,7 +935,10 @@ function exprCompara(L) {
   if (!L.aceita('for', 'é', 'forem', 'estiver')) return a;
   const neg = !!L.aceita('nao');
   let f;
-  if (L.aceita('maior')) {
+  if (L.aceita('marcado', 'marcada')) f = async c => { const v = await a(c); const i = ehElemento(v) && v.querySelector('input'); if (!i) erro(linha, '"marcado" só serve para caixa de marcar.'); return i.checked; };
+  else if (L.aceita('visivel')) f = async c => { const v = await a(c); return ehElemento(v) && !v.hidden; };
+  else if (L.aceita('escondido', 'escondida')) f = async c => { const v = await a(c); return ehElemento(v) && v.hidden; };
+  else if (L.aceita('maior')) {
     if (L.aceita('ou')) { L.espera('igual'); L.espera('a'); const b = exprJunto(L); f = async c => num(await a(c), linha) >= num(await b(c), linha); }
     else { L.espera('que'); const b = exprJunto(L); f = async c => num(await a(c), linha) > num(await b(c), linha); }
   } else if (L.aceita('menor')) {
@@ -529,13 +983,107 @@ function exprProd(L) {
 }
 function exprUn(L) {
   if (L.ehSim('-')) { L.i++; const a = exprUn(L), linha = L.num; return async c => -num(await a(c), linha); }
-  return primario(L);
+  const base = primario(L), linha = L.num;
+  if (L.eh('elevado') && L.eh('a', 1)) {
+    L.i += 2; const exp = exprUn(L);
+    return async c => Math.pow(num(await base(c), linha), num(await exp(c), linha));
+  }
+  return base;
 }
+
+/* "Olá, {nome}!" — o que está entre chaves é calculado e colocado no texto. */
+function textoComValores(txt, L) {
+  if (!/\{[^{}]+\}/.test(txt)) return () => txt;
+  const partes = txt.split(/\{([^{}]+)\}/);
+  const fs = partes.map((p, k) => {
+    if (k % 2 === 0) return () => p;
+    const M = new Linha(tokenizar(p, L.num), L.num, L.prog);
+    const e = expr(M);
+    if (!M.acabou) erro(L.num, `Não entendi "{${p}}" dentro do texto.`);
+    return e;
+  });
+  return async c => { let r = ''; for (const f of fs) r += texto(await f(c)); return r; };
+}
+
+const DIAS = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+const doisDig = n => String(n).padStart(2, '0');
+
+/* Converte o que veio da internet (JSON) para listas e fichas da linguagem. */
+function deJson(v) {
+  if (Array.isArray(v)) return v.map(deJson);
+  if (v && typeof v === 'object') {
+    const f = new Ficha();
+    for (const [k, x] of Object.entries(v)) { const n = norm(k); G.originais.set(n, k); f.set(n, deJson(x)); }
+    return f;
+  }
+  return v ?? '';
+}
+function paraGuardar(v) {
+  if (Array.isArray(v)) return v.map(paraGuardar);
+  if (v instanceof Ficha) { const o = {}; for (const [k, x] of v) o[G.originais.get(k) || k] = paraGuardar(x); return o; }
+  if (ehElemento(v)) return texto(v);
+  return v;
+}
+const chaveMemoria = k => `objetivo:${location.pathname}:memoria:${k}`;
 
 function primario(L) {
   const x = L.olha(), linha = L.num;
   if (!x) erro(linha, 'A linha terminou antes da hora: faltou um valor no final.');
-  if (x.t === 'num' || x.t === 'txt') { L.i++; return () => x.v; }
+  if (x.t === 'num') { L.i++; return () => x.v; }
+  if (x.t === 'txt') { L.i++; return textoComValores(x.v, L); }
+  // data e hora
+  if (['a', 'o', 'as', 'os'].includes(x.n) && L.olha(1) && L.olha(1).t === 'pal' && (L.eh('agora', 3) || L.eh('hoje', 3) || L.eh('semana', 3)) && (L.eh('de', 2) || L.eh('da', 2))) {
+    const p = L.olha(1).n, quando = L.olha(3).n, frase = [0, 1, 2, 3].map(k => L.olha(k).v).join(' ');
+    const conhecidos = ['hora', 'horas', 'data', 'dia', 'mes', 'ano', 'minuto', 'minutos', 'segundo', 'segundos'];
+    if (!conhecidos.includes(p)) erro(linha, `Não sei "${frase}". Use: a hora de agora, a data de hoje, o dia da semana, o dia de hoje, o mês de hoje, o ano de hoje.`);
+    L.i += 4;
+    return () => {
+      const d = new Date();
+      switch (p) {
+        case 'hora': case 'horas': return `${doisDig(d.getHours())}:${doisDig(d.getMinutes())}`;
+        case 'data': return `${doisDig(d.getDate())}/${doisDig(d.getMonth() + 1)}/${d.getFullYear()}`;
+        case 'dia': return quando === 'semana' ? DIAS[d.getDay()] : d.getDate();
+        case 'mes': return d.getMonth() + 1;
+        case 'ano': return d.getFullYear();
+        case 'minuto': case 'minutos': return d.getMinutes();
+        default: return d.getSeconds();
+      }
+    };
+  }
+  // memória do navegador
+  if (x.n === 'o' && L.eh('que', 1) && L.eh('foi', 2) && L.eh('lembrado', 3)) {
+    L.i += 4; L.espera('como', 'Use assim: o que foi lembrado como "recorde"');
+    const k = primario(L);
+    return async c => {
+      let s = null;
+      try { s = localStorage.getItem(chaveMemoria(texto(await k(c)))); } catch {}
+      return s === null ? '' : deJson(JSON.parse(s));
+    };
+  }
+  // posição do mouse
+  if (x.n === 'o' && (L.eh('x', 1) || L.eh('y', 1)) && L.eh('do', 2) && L.eh('mouse', 3)) {
+    const eixo = L.olha(1).n; L.i += 4;
+    return () => G.mouse[eixo];
+  }
+  // a posição de "uva" em frutas
+  if (x.n === 'a' && L.eh('posicao', 1) && L.eh('de', 2)) {
+    L.i += 3; const item = exprJunto(L); L.espera('em', 'Use assim: a posição de "uva" em frutas'); const em = primario(L);
+    return async c => {
+      const v = await em(c), it = await item(c);
+      if (Array.isArray(v)) return v.findIndex(z => igual(z, it)) + 1;
+      return texto(v).indexOf(texto(it)) + 1;
+    };
+  }
+  // a lista de 1 até 10
+  if ((x.n === 'a' || x.n === 'uma') && L.eh('lista', 1) && L.eh('de', 2)) {
+    L.i += 3; const a = exprSoma(L); L.espera('ate', 'Use assim: a lista de 1 até 10'); const b = exprSoma(L);
+    return async c => {
+      const ini = num(await a(c), linha), fim = num(await b(c), linha), r = [];
+      if (Math.abs(fim - ini) > 100000) erro(linha, 'Essa lista ficaria grande demais (mais de 100 mil itens).');
+      for (let k = ini; ini <= fim ? k <= fim : k >= fim; k += ini <= fim ? 1 : -1) r.push(k);
+      return r;
+    };
+  }
   if (L.ehSim('(')) {
     L.i++; const e = expr(L);
     if (!L.ehSim(')')) erro(linha, 'Abriu um parêntese "(" mas não fechou com ")".');
@@ -582,6 +1130,17 @@ function primario(L) {
       return l[Math.floor(Math.random() * l.length)];
     };
   }
+  if (n === 'a' && L.eh('tecla', 1)) {
+    L.i += 2;
+    const t = L.olha();
+    if (!t || t.t !== 'txt') erro(linha, 'Escreva a tecla entre aspas. Exemplo: se a tecla "espaço" estiver apertada então');
+    L.i++;
+    L.espera('estiver', 'Use assim: se a tecla "espaço" estiver apertada então');
+    L.espera('apertada', 'Use assim: se a tecla "espaço" estiver apertada então');
+    const tecla = (TECLAS[semAcento(t.v)] || t.v).toLowerCase();
+    G.usaTeclas = true;
+    return () => G.teclas.has(tecla);
+  }
   if (['o', 'a', 'os', 'as'].includes(n) && L.olha(1) && L.olha(1).t === 'pal') {
     const p = L.olha(1); L.i += 2;
     return propriedade(L, p);
@@ -615,8 +1174,29 @@ function propriedade(L, p) {
       return l[k - 1];
     };
   }
+  if (prop === 'trecho') {
+    L.espera('de', 'Use assim: o trecho de 1 até 3 de nome');
+    const a = exprSoma(L); L.espera('ate', 'Use assim: o trecho de 1 até 3 de nome'); const b = exprSoma(L);
+    L.espera('de', 'Use assim: o trecho de 1 até 3 de nome'); const alvo = primario(L);
+    return async c => {
+      const v = await alvo(c), ini = num(await a(c), linha), fim = num(await b(c), linha);
+      return Array.isArray(v) ? v.slice(ini - 1, fim) : texto(v).slice(ini - 1, fim);
+    };
+  }
+  if (prop === 'resto') {
+    L.espera('de', 'Use assim: o resto de 10 por 3');
+    const a = exprUn(L);
+    L.espera('por', 'Use assim: o resto de 10 por 3');
+    const b = exprUn(L);
+    return async c => {
+      const d = num(await b(c), linha);
+      if (d === 0) erro(linha, 'Não dá pra dividir por zero.');
+      const x = num(await a(c), linha);
+      return ((x % d) + d) % d;
+    };
+  }
   L.espera('de', `Depois de "${p.v}" eu esperava "de". Exemplo: o ${p.v} de alguma coisa.`);
-  const alvo = primario(L);
+  const alvo = L.ehSim('-') ? exprUn(L) : primario(L); // aceita "o absoluto de -3"
   return async c => {
     const v = await alvo(c);
     switch (prop) {
@@ -630,14 +1210,30 @@ function propriedade(L, p) {
       case 'media': { const l = lista(v, linha); return l.length ? l.reduce((s, x) => s + num(x, linha), 0) / l.length : 0; }
       case 'palavras': return texto(v).trim().split(/\s+/).filter(Boolean);
       case 'raiz': return Math.sqrt(num(v, linha));
+      case 'maiusculas': case 'maiuscula': return texto(v).toLocaleUpperCase('pt-BR');
+      case 'minusculas': case 'minuscula': return texto(v).toLocaleLowerCase('pt-BR');
+      case 'letras': return [...texto(v)];
+      case 'inverso': return Array.isArray(v) ? [...v].reverse() : [...texto(v)].reverse().join('');
+      case 'arredondado': return Math.round(num(v, linha));
+      case 'inteiro': return Math.trunc(num(v, linha));
+      case 'absoluto': return Math.abs(num(v, linha));
+      case 'numero': {
+        const s = texto(v).trim();
+        if (!pareceNumero(s)) erro(linha, `"${s}" não dá pra virar número.`);
+        return num(s, linha);
+      }
+      case 'valor':
+        if (ehElemento(v)) { const t = texto(v); return pareceNumero(t) ? num(t, linha) : t; }
+        return v;
+      case 'quantidade': return Array.isArray(v) ? v.length : texto(v).length;
     }
     if (v instanceof Ficha) {
       if (!v.has(prop)) erro(linha, `A ficha não tem a informação "${p.v}".${talvez(p.v, [...v.keys()].map(k => G.originais.get(k) || k))}`);
       return v.get(prop);
     }
     if (ehElemento(v)) {
-      if (prop === 'cor') return v.style.color;
-      if (prop === 'fundo') return v.style.background;
+      const r = lerPropEl(v, prop);
+      if (r !== undefined) return r;
     }
     erro(linha, `Não sei pegar "o ${p.v} de" algo assim.`);
   };
@@ -668,6 +1264,80 @@ function elemento(nomeTok, linha) {
       (sugestao(nomeTok.v, nomes) ? ` Você criou um chamado "${sugestao(nomeTok.v, nomes)}". Era esse?` : ' Crie antes com: crie um botão chamado ' + nomeTok.v));
   }
   return el;
+}
+
+/* Quem vai mudar: um elemento (pelo nome ou guardado numa variável) ou uma ficha. */
+function alvoDe(c, tok, linha) {
+  const local = c.local && c.local.get(tok.n);
+  if (ehElemento(local) || local instanceof Ficha) return local;
+  const el = G.els.get(tok.n);
+  if (el) return el;
+  const global = G.vars.get(tok.n);
+  if (ehElemento(global) || global instanceof Ficha) return global;
+  return elemento(tok, linha);
+}
+
+/* Tira o elemento do fluxo normal da página para poder ficar em qualquer posição. */
+function posicionar(el) {
+  if (el._pos) return;
+  el._pos = true;
+  el.style.position = 'absolute';
+  el.style.margin = '0';
+  el.style.minHeight = '0';
+  if (el.dataset.tipo === 'area') el.style.padding = '0';
+  if (el.classList.contains('obj-imagem')) el.querySelector('img').style.objectFit = 'contain';
+  const pai = el.parentElement;
+  if (pai && getComputedStyle(pai).position === 'static') { pai.style.position = 'relative'; pai.style.overflow = 'hidden'; }
+}
+
+function lerPropEl(el, prop) {
+  switch (prop) {
+    case 'x': return el._x ?? el.offsetLeft;
+    case 'y': return el._y ?? el.offsetTop;
+    case 'largura': return el._l ?? el.offsetWidth;
+    case 'altura': return el._a ?? el.offsetHeight;
+    case 'texto': return texto(el);
+    case 'cor': return el.style.color;
+    case 'fundo': return el.style.background;
+    case 'espelhado': return !!el._esp;
+    case 'rotacao': return el._rot || 0;
+    case 'opacidade': return el._op ?? 100;
+    case 'marcado': { const i = el.querySelector && el.querySelector('input'); return !!(i && i.checked); }
+    case 'endereco': return el.href || el.src || '';
+  }
+  return undefined;
+}
+function aplicarTransformacao(el) {
+  el.style.transform = [el._esp ? 'scaleX(-1)' : '', el._rot ? `rotate(${el._rot}deg)` : ''].join(' ').trim();
+}
+
+const PROPS_MUDAVEIS = ['texto', 'cor', 'fundo', 'tamanho', 'imagem', 'largura', 'altura', 'x', 'y', 'espelhado',
+  'rotação', 'opacidade', 'marcado', 'endereço', 'fonte'];
+function mudarProp(el, prop, v, linha, nome) {
+  switch (prop) {
+    case 'texto': if (el.tagName === 'INPUT') el.value = texto(v); else el.textContent = texto(v); break;
+    case 'cor': el.style.color = corCss(texto(v), linha); break;
+    case 'fundo': el.style.background = corCss(texto(v), linha); break;
+    case 'tamanho': el.style.fontSize = tamanhoCss(v, linha); break;
+    case 'imagem':
+      if (!el.classList.contains('obj-imagem')) erro(linha, `"${nome}" não é uma imagem.`);
+      porImagem(el, texto(v), linha); break;
+    case 'espelhado': el._esp = verdade(v); aplicarTransformacao(el); break;
+    case 'rotacao': el._rot = num(v, linha); aplicarTransformacao(el); break;
+    case 'opacidade': el._op = Math.max(0, Math.min(100, num(v, linha))); el.style.opacity = el._op / 100; break;
+    case 'marcado': { const i = el.querySelector('input'); if (!i) erro(linha, `"${nome}" não é uma caixa de marcar.`); i.checked = verdade(v); break; }
+    case 'endereco':
+      if (el.tagName === 'A') el.href = texto(v);
+      else if (el._porEndereco) el._porEndereco(texto(v));
+      else erro(linha, `"${nome}" não tem endereço para mudar.`);
+      break;
+    case 'fonte': el.style.fontFamily = fonteCss(texto(v), linha); break;
+    case 'largura': el._l = num(v, linha); el.style.width = el._l + 'px'; break;
+    case 'altura': el._a = num(v, linha); el.style.height = el._a + 'px'; break;
+    case 'x': posicionar(el); el._x = num(v, linha); el.style.left = el._x + 'px'; break;
+    case 'y': posicionar(el); el._y = num(v, linha); el.style.top = el._y + 'px'; break;
+    default: erro(linha, `Não sei mudar "${prop}" de um elemento.${talvez(prop, PROPS_MUDAVEIS)} Dá pra mudar: ${PROPS_MUDAVEIS.join(', ')}.`);
+  }
 }
 
 /* ───────────────────────── execução ───────────────────────── */
@@ -762,8 +1432,46 @@ function aplicarLayout(cont, lay, ehPagina) {
 const TIPOS = {
   'titulo': 'h1', 'subtitulo': 'h2', 'texto': 'p', 'botao': 'button', 'area': 'div',
   'caixa de texto': 'input', 'imagem': 'img', 'link': 'a', 'lista': 'ul', 'item': 'li', 'linha': 'hr',
+  'video': 'div', 'mapa': 'iframe', 'site': 'iframe', 'tabela': 'table', 'caixa de marcar': 'label',
+  'lista de opcoes': 'select', 'area de texto': 'textarea', 'controle deslizante': 'input', 'citacao': 'blockquote',
+  'codigo': 'pre', 'separador': 'hr', 'caixa de numero': 'input', 'barra de progresso': 'progress',
 };
-const NOMES_TIPOS = ['título', 'subtítulo', 'texto', 'botão', 'área', 'caixa de texto', 'imagem', 'link', 'lista', 'item', 'linha'];
+const NOMES_TIPOS = ['título', 'subtítulo', 'texto', 'botão', 'área', 'caixa de texto', 'imagem', 'link', 'lista', 'item', 'linha',
+  'vídeo', 'mapa', 'site', 'tabela', 'caixa de marcar', 'lista de opções', 'área de texto', 'controle deslizante',
+  'caixa de número', 'barra de progresso', 'citação', 'código', 'separador'];
+
+const FONTES = {
+  normal: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif', serifada: 'Georgia, "Times New Roman", serif',
+  monoespacada: 'ui-monospace, Menlo, Consolas, monospace', arredondada: 'ui-rounded, "Nunito", "Varela Round", system-ui, sans-serif',
+  manuscrita: '"Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive',
+};
+function fonteCss(v, l) {
+  const f = FONTES[semAcento(String(v).trim())];
+  if (!f) erro(l, `Não conheço a fonte "${v}". Use: normal, serifada, monoespaçada, arredondada ou manuscrita.`);
+  return f;
+}
+
+/* Endereço de vídeo: YouTube vira o player do YouTube; arquivo ou nome vira player de vídeo. */
+function idYoutube(url) { const m = /(?:youtu\.be\/|[?&]v=|embed\/|shorts\/)([\w-]{11})/.exec(url); return m && m[1]; }
+function montarVideo(el, src, linha) {
+  el.replaceChildren();
+  const id = idYoutube(src);
+  if (id) {
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${id}`;
+    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    f.allowFullscreen = true; f.title = 'Vídeo';
+    el.appendChild(f); return;
+  }
+  const v = document.createElement('video');
+  v.controls = true;
+  el.appendChild(v);
+  if (/[\/:.]/.test(src)) { v.src = src; return; }
+  resolverArquivo(src, 'video').then(url => {
+    if (url) v.src = url;
+    else mostrarErro(new ErroObjetivo(linha, `Não achei o vídeo "${src}". Coloque ${src}.mp4 na pasta videos/ ou use um endereço do YouTube.`));
+  });
+}
 
 const PROPS_APARENCIA = {
   'cor': (v, l) => ['color', corCss(v, l)],
@@ -791,12 +1499,21 @@ const PROPS_APARENCIA = {
   'alinhamento': (v, l) => ['text-align', { centro: 'center', centralizado: 'center', esquerda: 'left', direita: 'right' }[semAcento(v)] || erro(l, 'Alinhamento pode ser: esquerda, centro ou direita.')],
   'largura': (v, l) => ['width', { cheia: '100%', metade: '50%', automatica: 'auto' }[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Largura pode ser: cheia, metade, automática ou um número.'))],
   'altura': (v, l) => ['height', { cheia: '100%', automatica: 'auto' }[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Altura pode ser: cheia, automática ou um número.'))],
+  'largura maxima': (v, l) => ['max-width', pareceNumero(v) ? num(v) + 'px' : erro(l, 'Largura máxima precisa ser um número.')],
+  'fonte': (v, l) => ['font-family', fonteCss(v, l)],
+  'opacidade': (v, l) => ['opacity', pareceNumero(v) ? String(Math.max(0, Math.min(100, num(v))) / 100) : erro(l, 'Opacidade é um número de 0 a 100.')],
+  'rotacao': (v, l) => ['rotate', pareceNumero(v) ? num(v) + 'deg' : erro(l, 'Rotação é um número de graus, como 45.')],
+  'transicao': (v, l) => ['transition', { suave: 'all .3s ease', rapida: 'all .15s ease', lenta: 'all .7s ease', nenhuma: 'none' }[semAcento(v)] || erro(l, 'Transição pode ser: suave, rápida, lenta ou nenhuma.')],
+  'cursor': (v, l) => ['cursor', { mao: 'pointer', normal: 'default', texto: 'text', mira: 'crosshair', nenhum: 'none' }[semAcento(v)] || erro(l, 'Cursor pode ser: mão, normal, texto, mira ou nenhum.')],
+  'espaco entre': (v, l) => ['gap', ESPACOS[semAcento(v)] || (pareceNumero(v) ? num(v) + 'px' : erro(l, 'Espaço pode ser: nenhum, pequeno, médio, grande, enorme ou um número.'))],
+  'imagem de fundo': (v, l) => ['background', `center / cover no-repeat url("imagens/${encodeURIComponent(v.trim())}.png")`],
 };
 
-function compilarAparencia(alvoTxt, brutas, linhaAbre) {
+function compilarAparencia(alvoTxt, brutas, linhaAbre, seletorFixo) {
   const alvo = semAcento(alvoTxt.trim());
   let seletor;
-  if (alvo === 'pagina') seletor = 'body';
+  if (seletorFixo) seletor = seletorFixo;
+  else if (alvo === 'pagina') seletor = 'body';
   else if (TIPOS[alvo]) seletor = `#objetivo-raiz [data-tipo="${alvo.replace(/ /g, '-')}"]`;
   else seletor = `#objetivo-raiz [data-nome="${alvo}"][data-nome]`;
   const regras = [];
@@ -819,11 +1536,29 @@ function compilarAparencia(alvoTxt, brutas, linhaAbre) {
 
 const TECLAS = { espaco: ' ', enter: 'Enter', esquerda: 'ArrowLeft', direita: 'ArrowRight', cima: 'ArrowUp', baixo: 'ArrowDown', esc: 'Escape' };
 
+/* Onde os elementos novos entram: a página sendo montada agora, ou a que está na tela. */
+const paiPadrao = () => G.construindo || G.visivel || G.raiz;
+
+function mostrarPagina(nome, linha) {
+  const pag = G.paginas.get(nome);
+  if (!pag) {
+    const nomes = [...G.paginas.keys()].map(k => G.originais.get(k) || k);
+    erro(linha, `Não existe uma página chamada "${nome}".${talvez(nome, nomes)} Páginas: ${nomes.join(', ')}.`);
+  }
+  if (G.visivel === pag) return;
+  for (const p of G.paginas.values()) p.hidden = p !== pag;
+  G.visivel = pag;
+  try { if (decodeURIComponent(location.hash.slice(1)) !== nome) history.pushState(null, '', '#' + nome); } catch {}
+  window.scrollTo(0, 0);
+  for (const f of G.aoAbrirPagina.get(nome) || []) f();
+}
+
 class Programa {
-  constructor(fonte) {
+  constructor(fonte, funcoes = new Map(), arquivo = null) {
     this.linhas = fonte.split(/\r?\n/);
     this.i = 0;
-    this.funcoes = new Map();
+    this.funcoes = funcoes;
+    this.arquivo = arquivo;
     this.prepararFuncoes();
   }
   prepararFuncoes() {
@@ -882,8 +1617,14 @@ class Programa {
   }
 
   comando(L) {
-    const linha = L.num, p = L.olha();
-    const run = f => ({ linha, run: f });
+    const linha = L.num, p = L.olha(), arquivo = this.arquivo;
+    const run = f => ({
+      linha,
+      run: arquivo === null ? f : async c => {
+        try { return await f(c); }
+        catch (e) { if (e instanceof ErroObjetivo && e.arquivo === undefined) e.arquivo = arquivo; throw e; }
+      },
+    });
 
     if (p.t === 'pal' && L.eh('vale', 1)) {
       L.i += 2; const e = expr(L); L.fimDaLinha();
@@ -897,13 +1638,107 @@ class Programa {
         return run(async c => { document.title = texto(await e(c)); });
       }
       case 'use': {
-        L.i++; L.artigo();
+        L.i++;
+        if (L.olha() && L.olha().t === 'txt') { L.i++; L.fimDaLinha(); return run(() => {}); } // arquivo: já carregado antes de rodar
+        L.artigo();
         if (L.aceita('tema')) {
           const t = L.nome('o nome do tema (claro ou escuro)'); L.fimDaLinha();
           if (!['claro', 'escuro'].includes(t.n)) erro(linha, `Não conheço o tema "${t.v}". Use "claro" ou "escuro".`);
           return run(() => { document.body.classList.toggle('obj-escuro', t.n === 'escuro'); });
         }
-        erro(linha, 'Por enquanto "use" só funciona com tema: use o tema escuro');
+        if (L.aceita('estilo')) {
+          const e = L.nome('o nome do estilo'); L.espera('em', `Use assim: use o estilo ${e.v} em topo`);
+          const alvo = L.nome('o nome do elemento'); L.fimDaLinha();
+          return run(c => {
+            if (!G.estilos.has(e.n)) erro(linha, `Não existe o estilo "${e.v}". Crie antes com: estilo ${e.v} ... fim do estilo`);
+            alvoDe(c, alvo, linha).classList.add('obj-estilo-' + ident(e.n));
+          });
+        }
+        erro(linha, 'Depois de "use" eu entendo: use o tema escuro · use o estilo destaque em topo · use "outro.objetivo"');
+      }
+      case 'estilo': {
+        L.i++; const e = L.nome('o nome do estilo'); L.fimDaLinha();
+        const css = compilarAparencia('', this.blocoBruto('estilo', linha), linha, '.obj-estilo-' + ident(e.n));
+        return run(() => { G.estilos.add(e.n); G.estilo.textContent += css + '\n'; });
+      }
+      case 'troque': {
+        L.i++; const de = exprJunto(L); L.espera('por', 'Use assim: troque "a" por "e" em frase');
+        const por = exprJunto(L); L.espera('em', 'Use assim: troque "a" por "e" em frase');
+        const n = L.nome('o nome do valor'); L.fimDaLinha();
+        return run(async c => guardar(c, n.n, n.v, texto(ler(c, n.n, n.v, linha)).split(texto(await de(c))).join(texto(await por(c))), linha));
+      }
+      case 'ordene': case 'embaralhe': case 'inverta': {
+        L.i++; const n = L.nome('o nome da lista'); L.fimDaLinha();
+        return run(c => {
+          const l = lista(ler(c, n.n, n.v, linha), linha);
+          if (p.n === 'inverta') l.reverse();
+          else if (p.n === 'embaralhe') for (let k = l.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [l[k], l[j]] = [l[j], l[k]]; }
+          else if (l.every(x => typeof x === 'number' || pareceNumero(x))) l.sort((a, b) => num(a) - num(b));
+          else l.sort((a, b) => texto(a).localeCompare(texto(b), 'pt-BR'));
+        });
+      }
+      case 'lembre': {
+        L.i++; const e = exprJunto(L); L.espera('como', 'Use assim: lembre pontos como "recorde"');
+        const k = exprJunto(L); L.fimDaLinha();
+        return run(async c => {
+          try { localStorage.setItem(chaveMemoria(texto(await k(c))), JSON.stringify(paraGuardar(await e(c)))); }
+          catch { erro(linha, 'Este navegador não deixou guardar (memória cheia ou bloqueada).'); }
+        });
+      }
+      case 'esqueca': {
+        L.i++; const k = exprJunto(L); L.fimDaLinha();
+        return run(async c => { try { localStorage.removeItem(chaveMemoria(texto(await k(c)))); } catch {} });
+      }
+      case 'busque': {
+        L.i++; const url = exprJunto(L);
+        L.espera('e', 'Use assim: busque "https://..." e guarde em dados'); L.espera('guarde'); L.espera('em');
+        const n = L.nome('o nome onde guardar'); L.fimDaLinha();
+        return run(async c => {
+          const u = texto(await url(c));
+          let r;
+          try { r = await fetch(u); } catch { erro(linha, `Não consegui buscar "${u}". Pode ser falta de internet ou o site não permite ser lido por outras páginas.`); }
+          if (!r.ok) erro(linha, `O endereço "${u}" respondeu com erro ${r.status}.`);
+          const t = await r.text();
+          let v = t;
+          try { v = deJson(JSON.parse(t)); } catch {}
+          guardar(c, n.n, n.v, v, linha);
+        });
+      }
+      case 'va': {
+        L.i++; L.espera('para', 'Use assim: vá para a página contato'); L.artigo();
+        L.espera('pagina', 'Use assim: vá para a página contato');
+        const n = L.nome('o nome da página'); L.fimDaLinha();
+        return run(() => mostrarPagina(n.n, linha));
+      }
+      case 'role': {
+        L.i++; L.espera('ate', 'Use assim: role até contato'); const n = L.nome('o nome do elemento'); L.fimDaLinha();
+        return run(c => alvoDe(c, n, linha).scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      }
+      case 'limpe': {
+        L.i++; const n = L.nome('o nome do elemento'); L.fimDaLinha();
+        return run(c => {
+          const el = alvoDe(c, n, linha);
+          if (el.tagName === 'TABLE') el.tBodies[0].replaceChildren();
+          else if (['INPUT', 'TEXTAREA'].includes(el.tagName)) el.value = '';
+          else {
+            for (const f of el.querySelectorAll('[data-nome]')) G.els.delete(f.dataset.nome);
+            el.replaceChildren();
+          }
+        });
+      }
+      case 'foque': {
+        L.i++; L.aceita('em'); const n = L.nome('o nome do elemento'); L.fimDaLinha();
+        return run(c => { const el = alvoDe(c, n, linha); (el.querySelector && el.querySelector('input,select,textarea') || el).focus(); });
+      }
+      case 'abra': {
+        L.i++; L.artigo(); L.aceita('endereco'); const e = exprJunto(L); L.fimDaLinha();
+        return run(async c => { window.open(texto(await e(c)), '_blank', 'noopener'); });
+      }
+      case 'confirme': {
+        L.i++; const e = exprJunto(L);
+        L.espera('e', 'Use assim: confirme "Tem certeza?" e guarde em resposta'); L.espera('guarde'); L.espera('em');
+        const n = L.nome('o nome onde guardar a resposta'); L.fimDaLinha();
+        return run(async c => guardar(c, n.n, n.v, !!window.confirm(texto(await e(c))), linha));
       }
       case 'arrume': {
         L.i++;
@@ -913,7 +1748,7 @@ class Programa {
         L.espera('assim', 'Termine a linha com "assim". Exemplo: arrume a página assim');
         L.fimDaLinha();
         const lay = compilarLayout(this.blocoBruto('arrume', linha));
-        return run(() => aplicarLayout(alvo ? elemento(alvo, linha) : G.raiz, lay, !alvo));
+        return run(c => aplicarLayout(alvo ? alvoDe(c, alvo, linha) : paiPadrao(), lay, !alvo));
       }
       case 'aparencia': {
         L.i++; L.espera('de', 'Diga de quem é a aparência. Exemplo: aparência de botão');
@@ -924,26 +1759,84 @@ class Programa {
       }
       case 'crie': {
         L.i++; L.artigo();
+        // subpágina: crie a página contato ... fim da página
+        if (L.eh('pagina') && L.olha(1) && L.olha(1).t === 'pal') {
+          L.i++; const n = L.nome('o nome da página'); L.fimDaLinha();
+          const corpo = this.bloco('página', linha).corpo;
+          return run(async c => {
+            if (G.paginas.has(n.n)) erro(linha, `Já existe uma página chamada "${n.v}".`);
+            const pag = document.createElement('section');
+            pag.className = 'obj-pagina'; pag.dataset.pagina = n.n; pag.hidden = true;
+            G.raiz.appendChild(pag); G.paginas.set(n.n, pag); G.originais.set(n.n, n.v);
+            const antes = G.construindo;
+            G.construindo = pag;
+            try { await rodarBloco(c, corpo); } finally { G.construindo = antes; }
+          });
+        }
         const palavras = [];
-        while (!L.acabou && !L.eh('chamado') && !L.eh('chamada') && !L.eh('com') && !L.eh('dentro')) palavras.push(L.nome('o tipo do elemento'));
+        while (!L.acabou && !['chamado', 'chamada', 'com', 'dentro', 'para', 'de'].some(w => L.eh(w) && (w !== 'de' || palavras.length && !/^(caixa|lista|area|barra)$/.test(palavras[palavras.length - 1].n))))
+          palavras.push(L.nome('o tipo do elemento'));
         const tipo = palavras.map(x => x.n).join(' '), tipoOrig = palavras.map(x => x.v).join(' ');
         if (!TIPOS[tipo]) erro(linha, `Não sei criar "${tipoOrig}".${talvez(tipoOrig, NOMES_TIPOS)} Dá pra criar: ${NOMES_TIPOS.join(', ')}.`);
-        let nome = null, conteudo = null, dentro = null;
+        let nome = null, conteudo = null, dentro = null, destino = null, paraPagina = null, minimo = null, maximo = null;
         if (L.aceita('chamado', 'chamada')) nome = L.nome('o nome do elemento');
+        if (L.eh('de') && !L.eh('dentro', -1)) { L.i++; minimo = exprSoma(L); L.espera('ate', 'Use assim: crie um controle deslizante chamado volume de 0 até 100'); maximo = exprSoma(L); }
         if (L.aceita('com')) conteudo = exprJunto(L);
+        if (L.aceita('para')) {
+          if (L.eh('a') && L.eh('pagina', 1)) { L.i += 2; paraPagina = L.nome('o nome da página'); }
+          else destino = exprJunto(L);
+        }
         if (L.aceita('dentro')) { L.espera('de'); dentro = L.nome('o nome do elemento onde ele vai ficar'); }
         L.fimDaLinha();
         return run(async c => {
           if (nome && G.els.has(nome.n)) erro(linha, `Já existe um elemento chamado "${nome.v}". Cada elemento precisa de um nome diferente.`);
           const el = tipo === 'imagem' ? caixaDeImagem(nome, !conteudo) : document.createElement(TIPOS[tipo]);
           el.dataset.tipo = tipo.replace(/ /g, '-');
-          if (conteudo) {
-            const v = texto(await conteudo(c));
-            if (tipo === 'imagem') porImagem(el, v);
-            else if (tipo === 'caixa de texto') el.placeholder = v;
-            else el.textContent = v;
+          const bruto = conteudo ? await conteudo(c) : null;
+          const v = bruto === null ? null : texto(bruto);
+          switch (tipo) {
+            case 'imagem': if (v !== null) porImagem(el, v, linha); break;
+            case 'caixa de texto': case 'area de texto': if (v !== null) el.placeholder = v; break;
+            case 'caixa de numero': el.type = 'number'; if (v !== null) el.value = v; break;
+            case 'controle deslizante':
+              el.type = 'range';
+              el.min = minimo ? num(await minimo(c), linha) : 0;
+              el.max = maximo ? num(await maximo(c), linha) : 100;
+              if (v !== null) el.value = v;
+              break;
+            case 'barra de progresso': el.max = 100; el.value = v !== null ? num(v, linha) : 0; break;
+            case 'video': if (v !== null) montarVideo(el, v, linha); el._porEndereco = s => montarVideo(el, s, linha); break;
+            case 'mapa':
+              el._porEndereco = s => { el.src = `https://maps.google.com/maps?q=${encodeURIComponent(s)}&z=14&output=embed`; };
+              if (v !== null) el._porEndereco(v);
+              el.title = 'Mapa'; el.loading = 'lazy';
+              break;
+            case 'site': el._porEndereco = s => { el.src = s; }; if (v !== null) el.src = v; el.title = 'Site'; el.loading = 'lazy'; break;
+            case 'tabela': {
+              el.append(document.createElement('thead'), document.createElement('tbody'));
+              if (bruto !== null) {
+                const tr = document.createElement('tr');
+                for (const cab of (Array.isArray(bruto) ? bruto : [bruto])) { const th = document.createElement('th'); th.textContent = texto(cab); tr.appendChild(th); }
+                el.tHead.appendChild(tr);
+              }
+              break;
+            }
+            case 'caixa de marcar': {
+              const i = document.createElement('input'); i.type = 'checkbox';
+              const s = document.createElement('span'); s.textContent = v ?? '';
+              el.append(i, s); break;
+            }
+            case 'lista de opcoes':
+              for (const o of (Array.isArray(bruto) ? bruto : bruto === null ? [] : [bruto])) { const op = document.createElement('option'); op.textContent = texto(o); el.appendChild(op); }
+              break;
+            case 'link':
+              el.textContent = v ?? (destino ? '' : '');
+              if (paraPagina) { el.href = '#' + paraPagina.n; el.addEventListener('click', ev => { ev.preventDefault(); try { mostrarPagina(paraPagina.n, linha); } catch (e) { mostrarErro(e); } }); }
+              else if (destino) { el.href = texto(await destino(c)); el.target = '_blank'; el.rel = 'noopener'; if (v === null) el.textContent = el.href; }
+              break;
+            default: if (v !== null) el.textContent = v;
           }
-          const pai = dentro ? elemento(dentro, linha) : G.raiz;
+          const pai = dentro ? alvoDe(c, dentro, linha) : paiPadrao();
           if (nome) {
             el.dataset.nome = nome.n;
             G.els.set(nome.n, el); G.originais.set(nome.n, nome.v);
@@ -959,7 +1852,7 @@ class Programa {
           const el = document.createElement('p');
           el.dataset.tipo = 'texto';
           el.textContent = texto(await e(c));
-          (G.els.get('saida') || G.raiz).appendChild(el);
+          (G.els.get('saida') || paiPadrao()).appendChild(el);
         });
       }
       case 'mostre': {
@@ -989,6 +1882,23 @@ class Programa {
         } else {
           L.artigo();
           prop = L.nome('o que você quer mudar (texto, cor, fundo, tamanho...)').n;
+          if (prop === 'item') {
+            const idx = exprSoma(L); L.espera('de', 'Use assim: mude o item 2 de frutas para "pera"');
+            const n = L.nome('o nome da lista'); L.espera('para', 'Use assim: mude o item 2 de frutas para "pera"');
+            const e = expr(L); L.fimDaLinha();
+            return run(async c => {
+              const l = lista(ler(c, n.n, n.v, linha), linha), k = num(await idx(c), linha);
+              if (!Number.isInteger(k) || k < 1 || k > l.length) erro(linha, `A lista tem ${l.length} itens, então não existe o item ${texto(k)}.`);
+              l[k - 1] = await e(c);
+            });
+          }
+          if (prop === 'volume' && L.aceita('para')) {
+            const e = exprSoma(L); L.fimDaLinha();
+            return run(async c => {
+              G.volume = Math.min(100, Math.max(0, num(await e(c), linha))) / 100;
+              for (const s of G.tocando.values()) for (const a of s) a.volume = G.volume;
+            });
+          }
           L.espera('de', `Use assim: mude o ${prop} de algum_elemento para ...`);
         }
         const alvo = L.nome('o nome de quem vai mudar');
@@ -1001,36 +1911,52 @@ class Programa {
         L.fimDaLinha();
         return run(async c => {
           const v = await valor(c);
-          const el = G.els.get(alvo.n);
-          if (!el) {
-            const ficha = (c.local && c.local.get(alvo.n)) || G.vars.get(alvo.n);
-            if (ficha instanceof Ficha) { ficha.set(prop, v); return; }
-            elemento(alvo, linha);
-          }
-          switch (prop) {
-            case 'texto': if (el.tagName === 'INPUT') el.value = texto(v); else el.textContent = texto(v); break;
-            case 'cor': el.style.color = corCss(texto(v), linha); break;
-            case 'fundo': el.style.background = corCss(texto(v), linha); break;
-            case 'tamanho': el.style.fontSize = tamanhoCss(v, linha); break;
-            case 'imagem':
-              if (!el.classList.contains('obj-imagem')) erro(linha, `"${alvo.v}" não é uma imagem.`);
-              porImagem(el, texto(v)); break;
-            case 'largura': el.style.width = num(v, linha) + 'px'; break;
-            case 'altura': el.style.height = num(v, linha) + 'px'; break;
-            default: erro(linha, `Não sei mudar "${prop}" de um elemento.${talvez(prop, ['texto', 'cor', 'fundo', 'tamanho', 'imagem', 'largura', 'altura'])}`);
-          }
+          const a = alvoDe(c, alvo, linha);
+          if (a instanceof Ficha) { a.set(prop, v); return; }
+          mudarProp(a, prop, v, linha, alvo.v);
         });
       }
       case 'aumente': case 'diminua': {
-        L.i++; const n = L.nome('o nome do valor');
+        L.i++;
+        const sinal = p.n === 'aumente' ? 1 : -1;
+        if ((L.eh('o') || L.eh('a')) && L.olha(1) && L.olha(1).t === 'pal' && L.eh('de', 2)) {
+          L.i++; const prop = L.nome(); L.i++;
+          const alvo = L.nome('o nome de quem vai mudar');
+          let quanto = () => 1;
+          if (L.aceita('em')) quanto = exprSoma(L);
+          L.fimDaLinha();
+          return run(async c => {
+            const a = alvoDe(c, alvo, linha), d = sinal * num(await quanto(c), linha);
+            if (a instanceof Ficha) { a.set(prop.n, num(a.get(prop.n), linha) + d); return; }
+            const atual = lerPropEl(a, prop.n);
+            if (atual === undefined || !(typeof atual === 'number' || pareceNumero(atual)))
+              erro(linha, `"o ${prop.v} de ${alvo.v}" não é um número, então não dá pra ${p.v}.`);
+            mudarProp(a, prop.n, num(atual, linha) + d, linha, alvo.v);
+          });
+        }
+        const n = L.nome('o nome do valor');
         let quanto = () => 1;
         if (L.aceita('em')) quanto = exprSoma(L);
         L.fimDaLinha();
-        const sinal = p.n === 'aumente' ? 1 : -1;
         return run(async c => guardar(c, n.n, n.v, num(ler(c, n.n, n.v, linha), linha) + sinal * num(await quanto(c), linha), linha));
       }
       case 'adicione': {
-        L.i++; const e = exprJunto(L);
+        L.i++;
+        if (L.eh('a') && L.eh('linha', 1)) {
+          L.i += 2;
+          const cels = [exprJunto(L)];
+          while (L.ehSim(',')) { L.i++; cels.push(exprJunto(L)); }
+          L.espera('em', 'Use assim: adicione a linha "Ana", 9 em notas');
+          const n = L.nome('o nome da tabela'); L.fimDaLinha();
+          return run(async c => {
+            const t = alvoDe(c, n, linha);
+            if (t.tagName !== 'TABLE') erro(linha, `"${n.v}" não é uma tabela.`);
+            const tr = document.createElement('tr');
+            for (const f of cels) { const td = document.createElement('td'); td.textContent = texto(await f(c)); tr.appendChild(td); }
+            t.tBodies[0].appendChild(tr);
+          });
+        }
+        const e = exprJunto(L);
         L.espera('em', 'Use assim: adicione "uva" em frutas');
         const n = L.nome('o nome da lista'); L.fimDaLinha();
         return run(async c => { lista(ler(c, n.n, n.v, linha), linha).push(await e(c)); });
@@ -1117,8 +2043,40 @@ class Programa {
         const corpo = this.bloco('enquanto', linha).corpo;
         return run(async c => { while (verdade(await cond(c))) { if (await laco(c, corpo)) break; await volta(); } });
       }
+      case 'toque': {
+        L.i++; L.artigo();
+        if (L.aceita('nota')) {
+          const t = L.olha();
+          if (!t || (t.t !== 'pal' && t.t !== 'txt')) erro(linha, 'Diga qual nota. Exemplo: toque a nota dó por 0,2 segundos');
+          L.i++;
+          let nota = t.v;
+          if (L.aceita('sustenido')) nota += '#';
+          else if (L.aceita('bemol')) nota += 'b';
+          const freq = frequencia(nota, linha);
+          let dur = () => 0.25;
+          if (L.aceita('por')) {
+            dur = exprSoma(L);
+            L.espera(L.eh('segundo') ? 'segundo' : 'segundos', 'Use assim: toque a nota dó por 0,2 segundos');
+          }
+          L.fimDaLinha();
+          return run(async c => tocarNota(freq, num(await dur(c), linha)));
+        }
+        L.espera('som', 'Use assim: toque o som "pulo"   ou   toque a nota dó');
+        const e = exprJunto(L);
+        const repetir = !!L.aceita('repetindo');
+        L.fimDaLinha();
+        return run(async c => { tocarSom(texto(await e(c)), repetir, linha); });
+      }
       case 'pare': {
         L.i++;
+        if (L.eh('o') && L.eh('som', 1)) {
+          L.i += 2; const e = exprJunto(L); L.fimDaLinha();
+          return run(async c => pararSom(texto(await e(c))));
+        }
+        if (L.aceita('todos')) {
+          L.aceita('os'); L.espera('sons', 'Use assim: pare todos os sons'); L.fimDaLinha();
+          return run(() => pararSom(null));
+        }
         if (L.aceita('de')) { L.espera('repetir'); L.fimDaLinha(); return run(() => { throw new Sinal('parar-repetir', linha); }); }
         L.fimDaLinha(); return run(() => { throw new Sinal('pare', linha); });
       }
@@ -1134,7 +2092,20 @@ class Programa {
       }
       case 'a': {
         if (!L.eh('cada', 1)) break;
-        L.i += 2; const e = exprSoma(L);
+        L.i += 2;
+        if (L.aceita('quadro')) {
+          L.fimDaLinha();
+          const corpo = this.bloco('a cada', linha).corpo;
+          return run(() => {
+            const passo = async () => {
+              try { await rodarBloco({ local: null }, corpo); }
+              catch (s) { if (!(s instanceof Sinal && s.tipo === 'parar-repetir')) mostrarErro(s); return; }
+              requestAnimationFrame(passo);
+            };
+            requestAnimationFrame(passo);
+          });
+        }
+        const e = exprSoma(L);
         let fator = 1000;
         if (L.aceita('milissegundo', 'milissegundos')) fator = 1;
         else if (L.aceita('minuto', 'minutos')) fator = 60000;
@@ -1157,8 +2128,20 @@ class Programa {
       }
       case 'quando': {
         L.i++;
-        let alvo = null, evento, tecla = null;
-        if (L.aceita('clicar')) { L.espera('em', 'Use assim: quando clicar em enviar'); alvo = L.nome('o nome do elemento'); evento = 'click'; }
+        let alvo = null, evento, tecla = null, pagina = null;
+        if (L.eh('clicar') && L.eh('duas', 1)) { L.i += 2; L.espera('vezes'); L.espera('em', 'Use assim: quando clicar duas vezes em foto'); alvo = L.nome('o nome do elemento'); evento = 'dblclick'; }
+        else if (L.aceita('clicar')) { L.espera('em', 'Use assim: quando clicar em enviar'); alvo = L.nome('o nome do elemento'); evento = 'click'; }
+        else if (L.aceita('tirar')) { L.espera('o'); L.espera('mouse'); L.espera('de', 'Use assim: quando tirar o mouse de foto'); alvo = L.nome('o nome do elemento'); evento = 'mouseleave'; }
+        else if (L.aceita('mudar', 'marcar', 'escolher')) { L.aceita('em'); alvo = L.nome('o nome do elemento'); evento = 'change'; }
+        else if (L.eh('o') && L.eh('mouse', 1) && L.eh('mexer', 2)) { L.i += 3; evento = 'mousemove'; }
+        else if (L.aceita('soltar')) {
+          L.artigo(); L.espera('tecla', 'Use assim: quando soltar a tecla "espaço"');
+          const t = L.olha(); if (!t || t.t !== 'txt') erro(linha, 'Escreva a tecla entre aspas. Exemplo: quando soltar a tecla "espaço"');
+          L.i++; tecla = TECLAS[semAcento(t.v)] || t.v; evento = 'keyup';
+        }
+        else if (L.eh('a') && L.eh('pagina', 1) && L.olha(2) && L.olha(2).t === 'pal' && !L.eh('abrir', 2)) {
+          L.i += 2; pagina = L.nome('o nome da página'); L.espera('abrir', `Use assim: quando a página ${pagina.v} abrir`); evento = 'abrir-pagina';
+        }
         else if (L.aceita('digitar')) { L.espera('em', 'Use assim: quando digitar em campo'); alvo = L.nome('o nome do elemento'); evento = 'input'; }
         else if (L.aceita('colocar')) {
           L.aceita('uma', 'a'); L.espera('imagem', 'Use assim: quando colocar imagem em foto');
@@ -1170,14 +2153,20 @@ class Programa {
           const t = L.olha(); if (!t || t.t !== 'txt') erro(linha, 'Escreva a tecla entre aspas. Exemplo: quando apertar a tecla "espaço"');
           L.i++; tecla = TECLAS[semAcento(t.v)] || t.v; evento = 'keydown';
         } else if (L.eh('a') && L.eh('pagina', 1)) { L.i += 2; L.espera('abrir'); evento = 'abrir'; }
-        else erro(linha, 'Depois de "quando" eu entendo: clicar em, digitar em, passar o mouse em, colocar imagem em, apertar a tecla, a página abrir.');
+        else erro(linha, 'Depois de "quando" eu entendo: clicar em, clicar duas vezes em, digitar em, mudar, passar o mouse em, tirar o mouse de, o mouse mexer, colocar imagem em, apertar a tecla, soltar a tecla, a página abrir, a página contato abrir.');
         L.fimDaLinha();
         const corpo = this.bloco('quando', linha).corpo;
         const disparar = async () => { try { await rodarBloco({ local: null }, corpo); } catch (s) { mostrarErro(s); } };
-        return run(() => {
+        return run(c => {
           if (evento === 'abrir') { G.aoAbrir.push(disparar); return; }
-          if (evento === 'keydown') {
-            document.addEventListener('keydown', ev => {
+          if (evento === 'abrir-pagina') {
+            if (!G.aoAbrirPagina.has(pagina.n)) G.aoAbrirPagina.set(pagina.n, []);
+            G.aoAbrirPagina.get(pagina.n).push(disparar);
+            return;
+          }
+          if (evento === 'mousemove') { document.addEventListener('mousemove', disparar); return; }
+          if (evento === 'keydown' || evento === 'keyup') {
+            document.addEventListener(evento, ev => {
               if (ev.key === tecla || ev.key.toLowerCase() === String(tecla).toLowerCase()) {
                 if (ev.target.tagName !== 'INPUT') ev.preventDefault();
                 disparar();
@@ -1185,7 +2174,9 @@ class Programa {
             });
             return;
           }
-          elemento(alvo, linha).addEventListener(evento, disparar);
+          const el = alvoDe(c, alvo, linha);
+          // controle deslizante: avisa enquanto arrasta, não só quando solta
+          el.addEventListener(evento === 'change' && el.type === 'range' ? 'input' : evento, disparar);
         });
       }
       case 'ensine': {
@@ -1345,9 +2336,111 @@ function caixaDeImagem(nome, procurarSalva) {
   return el;
 }
 
-function porImagem(el, src) {
-  el.querySelector('img').src = src;
-  el.classList.remove('vazia');
+/* Aceita um endereço ou só um nome ("heroi"), que é procurado nos arquivos do projeto. */
+function porImagem(el, src, linha) {
+  if (el._src === src) return;
+  el._src = src;
+  const img = el.querySelector('img');
+  if (/[\/:.]/.test(src)) { img.src = src; el.classList.remove('vazia'); return; }
+  resolverArquivo(src, 'imagem').then(url => {
+    if (el._src !== src) return; // já trocaram de imagem enquanto procurava
+    if (!url) {
+      mostrarErro(new ErroObjetivo(linha ?? null, `Não achei a imagem "${src}". Coloque ${src}.png na pasta imagens/, ao lado do arquivo, ou arraste a imagem para o editor.`));
+      return;
+    }
+    img.src = url;
+    el.classList.remove('vazia');
+  });
+}
+
+/* ───────────────────────── arquivos do projeto (imagens e sons) ───────────────────────── */
+
+const PASTAS = {
+  imagem: { pasta: 'imagens', ext: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'] },
+  som: { pasta: 'sons', ext: ['mp3', 'ogg', 'wav', 'm4a'] },
+  video: { pasta: 'videos', ext: ['mp4', 'webm', 'ogv'] },
+};
+const chaveArquivo = nome => semAcento(nome.trim()).replace(/\.[a-z0-9]+$/, '');
+
+function existe(url, tipo) {
+  return new Promise(ok => {
+    if (tipo === 'imagem') { const i = new Image(); i.onload = () => ok(true); i.onerror = () => ok(false); i.src = url; return; }
+    if (tipo === 'video') {
+      const v = document.createElement('video');
+      v.addEventListener('loadedmetadata', () => ok(true), { once: true });
+      v.addEventListener('error', () => ok(false), { once: true });
+      v.preload = 'metadata'; v.src = url; return;
+    }
+    const a = new Audio();
+    a.addEventListener('canplaythrough', () => ok(true), { once: true });
+    a.addEventListener('error', () => ok(false), { once: true });
+    a.preload = 'auto'; a.src = url;
+  });
+}
+
+/* Procura primeiro nos arquivos arrastados para o editor, depois na pasta imagens/ ou sons/. */
+function resolverArquivo(nome, tipo) {
+  const k = chaveArquivo(nome);
+  const doEditor = G.arquivos.get(k);
+  if (doEditor) return Promise.resolve(doEditor);
+  const id = tipo + ':' + k;
+  if (!G.resolvidos.has(id)) {
+    G.resolvidos.set(id, (async () => {
+      const { pasta, ext } = PASTAS[tipo];
+      for (const e of ext) {
+        const url = `${pasta}/${encodeURIComponent(nome.trim())}.${e}`;
+        if (await existe(url, tipo)) return url;
+      }
+      return null;
+    })());
+  }
+  return G.resolvidos.get(id);
+}
+
+/* ───────────────────────── som ───────────────────────── */
+
+async function tocarSom(nome, repetir, linha) {
+  const url = await resolverArquivo(nome, 'som');
+  if (!url) {
+    mostrarErro(new ErroObjetivo(linha, `Não achei o som "${nome}". Coloque ${nome}.mp3 na pasta sons/, ao lado do arquivo, ou arraste o som para o editor.`));
+    return;
+  }
+  const a = new Audio(url);
+  a.volume = G.volume;
+  a.loop = repetir;
+  const k = chaveArquivo(nome);
+  if (!G.tocando.has(k)) G.tocando.set(k, new Set());
+  G.tocando.get(k).add(a);
+  a.addEventListener('ended', () => G.tocando.get(k).delete(a));
+  a.play().catch(() => {});
+}
+function pararSom(nome) {
+  const lista = nome === null ? [...G.tocando.values()] : [G.tocando.get(chaveArquivo(nome)) || new Set()];
+  for (const s of lista) { for (const a of s) a.pause(); s.clear(); }
+}
+
+const NOTAS = { do: 0, re: 2, mi: 4, fa: 5, sol: 7, la: 9, si: 11 };
+function frequencia(txt, linha) {
+  const m = /^(do|re|mi|fa|sol|la|si)(#|b)?(\d)?$/.exec(semAcento(txt.trim()));
+  if (!m) erro(linha, `Não conheço a nota "${txt}". Use dó, ré, mi, fá, sol, lá ou si, com a oitava se quiser: dó5, sol3.`);
+  const midi = 12 * ((m[3] ? +m[3] : 4) + 1) + NOTAS[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0);
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+function tocarNota(freq, segundos) {
+  const Contexto = window.AudioContext || window.webkitAudioContext;
+  if (!Contexto) return;
+  if (!G.audio) G.audio = new Contexto();
+  const ctx = G.audio;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime, osc = ctx.createOscillator(), ganho = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = freq;
+  ganho.gain.setValueAtTime(0, t);
+  ganho.gain.linearRampToValueAtTime(0.12 * G.volume + 0.0001, t + 0.01);
+  ganho.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(0.03, segundos));
+  osc.connect(ganho).connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + Math.max(0.03, segundos) + 0.02);
 }
 
 /* Reduz fotos grandes para caberem salvas no navegador. */
@@ -1384,8 +2477,8 @@ function aviso(msg) {
 }
 
 function mostrarErro(e) {
-  let linha = null, msg;
-  if (e instanceof ErroObjetivo) { linha = e.linha; msg = e.message; }
+  let linha = null, msg, arquivo = null;
+  if (e instanceof ErroObjetivo) { linha = e.linha; msg = e.message; arquivo = e.arquivo || null; }
   else if (e instanceof Sinal) {
     linha = e.linha;
     msg = e.tipo === 'parar-repetir' ? '"pare de repetir" só funciona dentro de um "a cada".'
@@ -1397,16 +2490,18 @@ function mostrarErro(e) {
   if (!caixa) { caixa = document.createElement('div'); caixa.className = 'obj-erro'; document.body.appendChild(caixa); }
   caixa.innerHTML = '';
   const t = document.createElement('strong');
-  t.textContent = linha ? `Erro na linha ${linha}` : 'Erro';
+  t.textContent = (arquivo ? `Erro em ${arquivo}, ` : 'Erro ') + (linha ? `na linha ${linha}` : '').trim();
+  if (!arquivo && !linha) t.textContent = 'Erro';
   const m = document.createElement('p'); m.textContent = msg;
   caixa.append(t, m);
-  if (linha && G.fonte[linha - 1] !== undefined) {
-    const cod = document.createElement('code'); cod.textContent = G.fonte[linha - 1].trim();
+  const fonte = arquivo ? G.fontes.get(arquivo) : G.fonte;
+  if (linha && fonte && fonte[linha - 1] !== undefined) {
+    const cod = document.createElement('code'); cod.textContent = fonte[linha - 1].trim();
     caixa.appendChild(cod);
   }
   const x = document.createElement('button'); x.textContent = '×'; x.onclick = () => caixa.remove();
   caixa.appendChild(x);
-  console.error(`[Objetivo] linha ${linha}: ${msg}`);
+  console.error(`[Objetivo] ${arquivo ? arquivo + ', ' : ''}linha ${linha}: ${msg}`);
 }
 
 let espiao = null;
@@ -1430,7 +2525,22 @@ const CSS_BASE = `
 :root{--obj-fundo:#f5f6f8;--obj-texto:#1b1d22;--obj-area:#fff;--obj-borda:#e1e3e8;--obj-destaque:#3b82f6}
 body.obj-escuro{--obj-fundo:#121417;--obj-texto:#e7e9ee;--obj-area:#1b1e23;--obj-borda:#2b2f36;--obj-destaque:#3b82f6}
 body{margin:0;background:var(--obj-fundo);color:var(--obj-texto);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-#objetivo-raiz{box-sizing:border-box;min-height:100vh;padding:16px;gap:12px}
+#objetivo-raiz{box-sizing:border-box;min-height:100vh;padding:16px}
+#objetivo-raiz .obj-pagina{min-height:calc(100vh - 32px);gap:12px}
+#objetivo-raiz a{color:var(--obj-destaque)}
+#objetivo-raiz [data-tipo="video"] iframe,#objetivo-raiz [data-tipo="video"] video{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
+#objetivo-raiz iframe[data-tipo]{display:block;width:100%;aspect-ratio:16/10;border:0;border-radius:10px;background:var(--obj-area)}
+#objetivo-raiz table{border-collapse:collapse;width:100%;background:var(--obj-area);border-radius:10px;overflow:hidden}
+#objetivo-raiz th,#objetivo-raiz td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--obj-borda)}
+#objetivo-raiz th{font-weight:600;background:color-mix(in srgb,var(--obj-destaque) 12%,var(--obj-area))}
+#objetivo-raiz [data-tipo="caixa-de-marcar"]{display:flex;align-items:center;gap:8px;cursor:pointer}
+#objetivo-raiz [data-tipo="caixa-de-marcar"] input{width:18px;height:18px;accent-color:var(--obj-destaque)}
+#objetivo-raiz select,#objetivo-raiz textarea{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--obj-borda);background:var(--obj-area);color:var(--obj-texto)}
+#objetivo-raiz textarea{min-height:100px;width:100%;resize:vertical}
+#objetivo-raiz input[type="range"]{padding:0;border:0;background:none;accent-color:var(--obj-destaque);width:100%}
+#objetivo-raiz progress{width:100%;height:14px;accent-color:var(--obj-destaque)}
+#objetivo-raiz blockquote{margin:0;padding:8px 16px;border-left:4px solid var(--obj-destaque);font-style:italic}
+#objetivo-raiz pre[data-tipo]{margin:0;padding:12px;border-radius:8px;background:var(--obj-area);border:1px solid var(--obj-borda);font:14px/1.5 ui-monospace,monospace;overflow-x:auto}
 #objetivo-raiz *{box-sizing:border-box}
 #objetivo-raiz h1,#objetivo-raiz h2,#objetivo-raiz p{margin:0 0 .5em}
 #objetivo-raiz [data-tipo="area"]{background:var(--obj-area);border:1px solid var(--obj-borda);border-radius:10px;padding:16px}
@@ -1458,12 +2568,45 @@ body{margin:0;background:var(--obj-fundo);color:var(--obj-texto);font:16px/1.5 s
 
 /* ───────────────────────── início ───────────────────────── */
 
+/* Acha as linhas  use "outro.objetivo"  (também dentro dos arquivos usados) e baixa todos antes de rodar. */
+async function carregarArquivos(fonte) {
+  const lista = [], vistos = new Set();
+  async function visitar(txt) {
+    for (const m of txt.matchAll(/^[ \t]*use[ \t]+"([^"]+)"[ \t]*(?:--.*)?$/gm)) {
+      let nome = m[1];
+      if (!/\.objetivo$/i.test(nome)) nome += '.objetivo';
+      if (vistos.has(nome)) continue;
+      vistos.add(nome);
+      let r;
+      try { r = await fetch(nome); } catch { r = null; }
+      if (!r || !r.ok) {
+        const n = txt.slice(0, m.index).split('\n').length;
+        const e = new ErroObjetivo(n, `Não consegui abrir "${nome}". Ele precisa estar na mesma pasta deste arquivo.`);
+        throw e;
+      }
+      const t = await r.text();
+      await visitar(t);
+      lista.push({ nome, fonte: t });
+    }
+  }
+  await visitar(fonte);
+  return lista;
+}
+
 async function executar(fonte) {
   G.fonte = fonte.split(/\r?\n/);
   try {
-    const corpo = new Programa(fonte).analisar();
+    const usados = /^[ \t]*use[ \t]+"/m.test(fonte) ? await carregarArquivos(fonte) : [];
+    const funcoes = new Map();
+    const programas = usados.map(u => { G.fontes.set(u.nome, u.fonte.split(/\r?\n/)); return [u.nome, new Programa(u.fonte, funcoes, u.nome)]; });
+    const principal = new Programa(fonte, funcoes);
+    const corpos = programas.map(([nome, p]) => { try { return p.analisar(); } catch (e) { e.arquivo = nome; throw e; } });
+    const corpo = principal.analisar();
+    for (const cp of corpos) await rodarBloco({ local: null }, cp);
     await rodarBloco({ local: null }, corpo);
     for (const f of G.aoAbrir) await f();
+    const pedida = decodeURIComponent(location.hash.slice(1));
+    if (pedida && G.paginas.has(norm(pedida))) mostrarPagina(norm(pedida), null);
   } catch (e) { mostrarErro(e); }
 }
 
@@ -1471,13 +2614,41 @@ function preparar() {
   const css = document.createElement('style'); css.textContent = CSS_BASE; document.head.appendChild(css);
   G.estilo = document.createElement('style'); document.head.appendChild(G.estilo);
   G.raiz = document.createElement('main'); G.raiz.id = 'objetivo-raiz'; document.body.appendChild(G.raiz);
+  // a página principal se chama "início"; as outras são criadas com  crie a página ...
+  const inicio = document.createElement('section');
+  inicio.className = 'obj-pagina'; inicio.dataset.pagina = 'inicio';
+  G.raiz.appendChild(inicio);
+  G.paginas.set('inicio', inicio); G.originais.set('inicio', 'início'); G.visivel = inicio;
+  window.addEventListener('popstate', () => {
+    const n = norm(decodeURIComponent(location.hash.slice(1)) || 'inicio');
+    if (G.paginas.has(n)) { try { mostrarPagina(n, null); } catch {} }
+  });
+  document.addEventListener('mousemove', ev => { G.mouse.x = ev.pageX; G.mouse.y = ev.pageY; });
   // impede o navegador de abrir a imagem se ela for solta fora de uma caixa de imagem
   document.addEventListener('dragover', ev => ev.preventDefault());
   document.addEventListener('drop', ev => ev.preventDefault());
+  // guarda quais teclas estão apertadas agora, para "se a tecla ... estiver apertada"
+  const ROLAM = [' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+  document.addEventListener('keydown', ev => {
+    const k = ev.key.toLowerCase();
+    G.teclas.add(k);
+    if (G.usaTeclas && ROLAM.includes(k) && ev.target.tagName !== 'INPUT') ev.preventDefault();
+  });
+  document.addEventListener('keyup', ev => G.teclas.delete(ev.key.toLowerCase()));
+  window.addEventListener('blur', () => G.teclas.clear());
 }
 
 /* Usado pela extensão: roda um código .objetivo na página atual. */
-window.Objetivo = { rodar(fonte) { preparar(); return executar(fonte); } };
+window.Objetivo = {
+  /* opcoes.arquivos: { "heroi.png": "data:..." } — imagens e sons arrastados para o editor */
+  rodar(fonte, opcoes = {}) {
+    for (const [nome, url] of Object.entries(opcoes.arquivos || {})) G.arquivos.set(chaveArquivo(nome), url);
+    preparar();
+    return executar(fonte);
+  },
+  /* Só lê o código e devolve o primeiro erro (ou null), sem rodar nada. */
+  verificar(fonte) { G.fonte = fonte.split(/\r?\n/); try { new Programa(fonte).analisar(); return null; } catch (e) { return e instanceof ErroObjetivo ? { linha: e.linha, mensagem: e.message } : { linha: null, mensagem: String(e) }; } },
+};
 
 async function iniciar() {
   const embutido = document.querySelector('script[type="text/objetivo"]');
@@ -1508,17 +2679,49 @@ else iniciar();
 <script>
 (() => {
   const interpretador = document.getElementById('interpretador').textContent;
+
+  const VERBOS = new Set(('vale crie mude pinte quando se senão então fim repita para cada enquanto aumente diminua escreva mostre ' +
+    'esconda apague página use arrume assim aparência ensine responda adicione remova pare pule espere pergunte tente').split(' '));
+  const TIPOS = new Set('título texto botão área imagem lista caixa'.split(' '));
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function realcar(txt) {
+    return txt.split('\n').map(linha => {
+      const k = linha.indexOf('--');
+      let corpo = linha, comentario = '';
+      if (k >= 0) { corpo = linha.slice(0, k); comentario = linha.slice(k); }
+      const html = corpo.split(/("[^"]*"|\b\d+\b|[\p{L}_][\p{L}\p{N}_]*)/u).map(p => {
+        if (!p) return '';
+        if (p.startsWith('"')) return `<span class="s">${esc(p)}</span>`;
+        if (/^\d+$/.test(p)) return `<span class="n">${p}</span>`;
+        if (VERBOS.has(p.toLowerCase())) return `<span class="k">${esc(p)}</span>`;
+        if (TIPOS.has(p.toLowerCase())) return `<span class="t">${esc(p)}</span>`;
+        return esc(p);
+      }).join('');
+      return html + (comentario ? `<span class="c">${esc(comentario)}</span>` : '');
+    }).join('\n');
+  }
+  document.querySelectorAll('.realce').forEach(el => { el.innerHTML = realcar(el.textContent); });
+
+  function rodarEm(quadro, fonte, aoTerminar) {
+    quadro.onload = () => {
+      try { quadro.contentWindow.Objetivo.rodar(fonte, { arquivos: todosArquivos() }); if (aoTerminar) aoTerminar(true); }
+      catch (e) { console.error(e); if (aoTerminar) aoTerminar(false); }
+    };
+    quadro.srcdoc = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script>'
+      + interpretador + '<\/script>';
+  }
+  rodarEm(document.getElementById('demo-previa'), document.getElementById('demo-codigo').textContent);
+
   const codigo = document.getElementById('codigo');
   const numeros = document.getElementById('numeros');
   const previa = document.getElementById('previa');
-  const editor = document.getElementById('editor');
+  const area = document.getElementById('editor-area');
   const nomeArquivo = document.getElementById('nome-arquivo');
   const estado = document.getElementById('estado');
   const exemplos = document.getElementById('exemplos');
-  const GUARDA = 'objetivo-site:rascunho';
-
-  function guardar(chave, valor) { try { localStorage.setItem(chave, valor); } catch {} }
-  function ler(chave) { try { return localStorage.getItem(chave); } catch { return null; } }
+  const GUARDA = 'objetivo-escolas:rascunho';
+  const guardar = (c, v) => { try { localStorage.setItem(c, v); } catch {} };
+  const ler = c => { try { return localStorage.getItem(c); } catch { return null; } };
 
   function atualizarNumeros() {
     const n = codigo.value.split('\n').length;
@@ -1527,18 +2730,7 @@ else iniciar();
     numeros.textContent = t;
     numeros.scrollTop = codigo.scrollTop;
   }
-
-  function rodar() {
-    const fonte = codigo.value;
-    previa.onload = () => {
-      try { previa.contentWindow.Objetivo.rodar(fonte); }
-      catch (e) { estado.textContent = 'não consegui rodar'; console.error(e); }
-    };
-    previa.srcdoc = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script>'
-      + interpretador + '<\/script>';
-    estado.textContent = 'atualiza enquanto você digita';
-  }
-
+  function rodar() { rodarEm(previa, codigo.value, ok => { estado.textContent = ok ? 'atualiza enquanto você digita' : 'não consegui rodar'; }); }
   let espera = null;
   function aoDigitar() {
     atualizarNumeros();
@@ -1547,7 +2739,6 @@ else iniciar();
     estado.textContent = 'digitando…';
     espera = setTimeout(rodar, 700);
   }
-
   function abrir(nome, texto) {
     nomeArquivo.textContent = nome;
     codigo.value = texto;
@@ -1555,44 +2746,58 @@ else iniciar();
     guardar(GUARDA, JSON.stringify({ nome, codigo: texto }));
     rodar();
   }
-
-  function carregarExemplo(id) {
-    const opcao = exemplos.querySelector(`option[value="${id}"]`);
-    const nome = id.replace('ex-', '') + '.objetivo';
-    abrir(nome, document.getElementById(id).textContent);
-    if (opcao) exemplos.value = id;
-  }
-
+  function carregarExemplo(id) { abrir(id.replace('ex-', '') + '.objetivo', document.getElementById(id).textContent); exemplos.value = id; }
   async function abrirArquivo(arq) {
     if (!arq) return;
-    if (!/\.objetivo$/i.test(arq.name) && !arq.type.startsWith('text/')) {
-      estado.textContent = `"${arq.name}" não é um arquivo .objetivo`;
-      return;
-    }
+    if (!/\.objetivo$/i.test(arq.name) && !arq.type.startsWith('text/')) { estado.textContent = `"${arq.name}" não é um arquivo .objetivo`; return; }
     abrir(arq.name, await arq.text());
   }
 
   codigo.addEventListener('input', aoDigitar);
   codigo.addEventListener('scroll', () => { numeros.scrollTop = codigo.scrollTop; });
   codigo.addEventListener('keydown', ev => {
-    if (ev.key === 'Tab' && !ev.shiftKey) {
-      ev.preventDefault();
-      codigo.setRangeText('    ', codigo.selectionStart, codigo.selectionEnd, 'end');
-      aoDigitar();
-    }
+    if (ev.key === 'Tab' && !ev.shiftKey) { ev.preventDefault(); codigo.setRangeText('    ', codigo.selectionStart, codigo.selectionEnd, 'end'); aoDigitar(); }
     if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); clearTimeout(espera); rodar(); }
   });
   document.getElementById('rodar').addEventListener('click', () => { clearTimeout(espera); rodar(); });
   exemplos.addEventListener('change', () => carregarExemplo(exemplos.value));
-  document.getElementById('arquivo').addEventListener('change', ev => abrirArquivo(ev.target.files[0]));
+  document.getElementById('arquivo').addEventListener('change', ev => soltarArquivos(ev.target.files));
+  area.addEventListener('dragover', ev => { ev.preventDefault(); area.classList.add('soltando'); });
+  area.addEventListener('dragleave', () => area.classList.remove('soltando'));
+  area.addEventListener('drop', ev => { ev.preventDefault(); area.classList.remove('soltando'); soltarArquivos(ev.dataTransfer.files); });
 
-  editor.addEventListener('dragover', ev => { ev.preventDefault(); editor.classList.add('soltando'); });
-  editor.addEventListener('dragleave', () => editor.classList.remove('soltando'));
-  editor.addEventListener('drop', ev => {
-    ev.preventDefault();
-    editor.classList.remove('soltando');
-    abrirArquivo(ev.dataTransfer.files[0]);
-  });
+  const EMBUTIDOS = JSON.parse(document.getElementById('arquivos-embutidos').textContent);
+  const GUARDA_ARQ = 'objetivo-escolas:arquivos';
+  let meus = {};
+  try { meus = JSON.parse(ler(GUARDA_ARQ)) || {}; } catch {}
+  function todosArquivos() { return { ...EMBUTIDOS, ...meus }; }
+  const listaArq = document.getElementById('lista-arquivos');
+  function guardarArq() { guardar(GUARDA_ARQ, JSON.stringify(meus)); }
+  function mostrarArquivos() {
+    listaArq.textContent = '';
+    const nomes = Object.keys(meus);
+    if (!nomes.length) { listaArq.textContent = 'Nenhuma imagem ou som seu ainda. O exemplo do jogo já vem com heroi1, heroi2 e estrela.'; return; }
+    listaArq.append('Seus arquivos: ');
+    for (const n of nomes) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'arquivo-chip'; b.textContent = n + ' ×'; b.title = 'Remover ' + n;
+      b.onclick = () => { delete meus[n]; guardarArq(); mostrarArquivos(); rodar(); };
+      listaArq.append(b, ' ');
+    }
+  }
+  const lerComoDados = arq => new Promise((ok, falha) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = falha; r.readAsDataURL(arq); });
+  async function soltarArquivos(lista) {
+    let mudou = false;
+    for (const arq of lista) {
+      if (/\.objetivo$/i.test(arq.name) || arq.type === 'text/plain') { await abrirArquivo(arq); continue; }
+      if (!/^(image|audio)\//.test(arq.type)) { estado.textContent = `"${arq.name}" não é imagem, som nem .objetivo`; continue; }
+      if (arq.size > 3e6) { estado.textContent = `"${arq.name}" é grande demais (máximo 3 MB)`; continue; }
+      meus[arq.name] = await lerComoDados(arq);
+      mudou = true;
+    }
+    if (mudou) { guardarArq(); mostrarArquivos(); rodar(); }
+  }
+  mostrarArquivos();
 
   let salvo = null;
   try { salvo = JSON.parse(ler(GUARDA)); } catch {}
